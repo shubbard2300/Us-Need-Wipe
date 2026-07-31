@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Us Need Wipe — a race to the castle</title>
+<meta name="description" content="Us Need Wipe: a Candyland-style race to the castle. Poop, wipe fast, and dodge the angry bushes chasing you.">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<!-- Hidden sprite defs, reused for the player token and every bush chaser -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="sprite-tp" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="88" rx="34" ry="7" fill="#000" opacity=".12"/>
+      <path d="M16 40 Q16 12 50 12 Q84 12 84 40 L84 68 Q84 92 50 92 Q16 92 16 68 Z" fill="#fbe9dd" stroke="#3a3a3a" stroke-width="3"/>
+      <path d="M84 40 L84 68 Q84 84 68 90 Q80 78 78 62 Q90 58 84 40 Z" fill="#f4d9c6" stroke="#3a3a3a" stroke-width="3"/>
+      <ellipse cx="50" cy="26" rx="17" ry="9" fill="#e2b79f" stroke="#3a3a3a" stroke-width="3"/>
+      <path d="M27 46 q9 -13 18 -2" fill="none" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+      <path d="M73 46 q-9 -13 -18 -2" fill="none" stroke="#2b2b2b" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="38" cy="52" r="6" fill="#232323"/>
+      <circle cx="62" cy="52" r="6" fill="#232323"/>
+      <circle cx="36" cy="49" r="1.6" fill="#fff"/>
+      <circle cx="60" cy="49" r="1.6" fill="#fff"/>
+      <path d="M32 68 q18 12 36 0 q-2 12 -18 12 q-16 0 -18 -12 Z" fill="#fff" stroke="#2b2b2b" stroke-width="3"/>
+      <ellipse cx="8" cy="72" rx="9" ry="7" fill="#f3c6bb" stroke="#3a3a3a" stroke-width="3" class="tp-arm-l"/>
+      <ellipse cx="92" cy="72" rx="9" ry="7" fill="#f3c6bb" stroke="#3a3a3a" stroke-width="3" class="tp-arm-r"/>
+      <ellipse cx="34" cy="96" rx="8" ry="5" fill="#f3c6bb" stroke="#3a3a3a" stroke-width="3"/>
+      <ellipse cx="66" cy="96" rx="8" ry="5" fill="#f3c6bb" stroke="#3a3a3a" stroke-width="3"/>
+    </symbol>
+
+    <symbol id="sprite-bush" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="38" ry="6" fill="#000" opacity=".15"/>
+      <g stroke="#1f5c1f" stroke-width="3" stroke-linejoin="round">
+        <circle cx="30" cy="34" r="20" fill="#4fd44f"/>
+        <circle cx="70" cy="34" r="20" fill="#3fc23f"/>
+        <circle cx="50" cy="22" r="22" fill="#5be05b"/>
+        <circle cx="24" cy="55" r="22" fill="#38b038"/>
+        <circle cx="76" cy="55" r="22" fill="#2fa32f"/>
+        <circle cx="50" cy="60" r="26" fill="#43c943"/>
+      </g>
+      <path d="M22 42 q10 -16 22 -3" fill="none" stroke="#1f5c1f" stroke-width="6" stroke-linecap="round"/>
+      <path d="M78 42 q-10 -16 -22 -3" fill="none" stroke="#1f5c1f" stroke-width="6" stroke-linecap="round"/>
+      <ellipse cx="36" cy="52" rx="10" ry="12" fill="#fff" stroke="#1f5c1f" stroke-width="2.5"/>
+      <ellipse cx="64" cy="52" rx="10" ry="12" fill="#fff" stroke="#1f5c1f" stroke-width="2.5"/>
+      <circle cx="38" cy="55" r="5" fill="#25314a"/>
+      <circle cx="62" cy="55" r="5" fill="#25314a"/>
+      <path d="M30 74 q20 18 40 0 q-4 -8 -20 -8 q-16 0 -20 8 Z" fill="#e7e7e7" stroke="#1f5c1f" stroke-width="3"/>
+      <path d="M36 74 l4 8 M46 76 l2 9 M56 76 l-2 9 M64 74 l-4 8" stroke="#1f5c1f" stroke-width="2" stroke-linecap="round"/>
+      <g stroke="#5b6572" stroke-width="3" stroke-linejoin="round">
+        <ellipse cx="6" cy="76" rx="13" ry="15" fill="#c9d1d9" class="bush-fist-l"/>
+        <ellipse cx="94" cy="76" rx="13" ry="15" fill="#c9d1d9" class="bush-fist-r"/>
+      </g>
+    </symbol>
+
+    <symbol id="sprite-castle" viewBox="0 0 200 160">
+      <path d="M0 160 L0 110 Q50 70 100 95 Q150 70 200 110 L200 160 Z" fill="#3fae52"/>
+      <path d="M0 160 L0 130 Q60 100 100 118 Q140 100 200 130 L200 160 Z" fill="#2f9642"/>
+      <g fill="#cfd6e6" stroke="#3a3f57" stroke-width="2">
+        <rect x="70" y="60" width="18" height="55" />
+        <rect x="112" y="60" width="18" height="55" />
+        <rect x="88" y="40" width="24" height="75" />
+        <polygon points="70,60 79,42 88,60"/>
+        <polygon points="112,60 121,42 130,60"/>
+        <polygon points="88,40 100,14 112,40"/>
+      </g>
+      <rect x="96" y="90" width="8" height="25" fill="#5a4632"/>
+      <rect x="98" y="10" width="3" height="14" fill="#3a3f57"/>
+      <path d="M101 10 L112 15 L101 19 Z" fill="#e8b13c"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="sky">
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+</div>
+
+<main class="wrap">
+  <header class="game-header">
+    <h1>🧻 Us Need Wipe</h1>
+    <p class="tag">Race the board. Poop, wipe fast, don't get caught by the bushes.</p>
+  </header>
+
+  <div class="hud">
+    <div class="hud-item"><span class="hud-label">Score</span><span id="score">0</span></div>
+    <div class="hud-item"><span class="hud-label">Best</span><span id="best">0</span></div>
+    <div class="hud-item"><span class="hud-label">Wipes</span><span id="wipes">0</span></div>
+    <div class="hud-item hud-item--warn" id="proximityHud"><span class="hud-label">Bushes</span><span id="proximity">far</span></div>
+  </div>
+
+  <div class="board-shell">
+    <div class="board" id="board"></div>
+  </div>
+
+  <div class="controls">
+    <button type="button" id="rollBtn" class="btn btn-roll">🎲 Roll &amp; Move <span id="dieFace"></span></button>
+    <p class="hint">Press <kbd>Space</kbd> to roll. When you land on 💩, mash <kbd>W</kbd> or tap WIPE before the bar runs out.</p>
+  </div>
+
+  <div id="toast" class="toast"></div>
+</main>
+
+<!-- Wipe quick-time event -->
+<div id="wipeOverlay" class="overlay hidden">
+  <div class="wipe-card">
+    <div class="wipe-emoji">💩</div>
+    <h2>UH OH — WIPE NOW!</h2>
+    <div class="wipe-timerbar"><div id="wipeTimerFill" class="wipe-timerbar-fill"></div></div>
+    <div class="wipe-progress">
+      <div id="wipeProgressFill" class="wipe-progress-fill"></div>
+    </div>
+    <button type="button" id="wipeBtn" class="btn btn-wipe">🧻 WIPE!</button>
+    <p class="hint">Tap the button or mash <kbd>W</kbd></p>
+  </div>
+</div>
+
+<!-- Caught by a bush -->
+<div id="caughtOverlay" class="overlay hidden">
+  <div class="wipe-card caught-card">
+    <div class="wipe-emoji">😱</div>
+    <h2>CAUGHT!</h2>
+    <p id="caughtText">An angry bush got you. Back you go!</p>
+  </div>
+</div>
+
+<!-- Win screen -->
+<div id="winOverlay" class="overlay hidden">
+  <div class="wipe-card win-card">
+    <svg viewBox="0 0 200 160" class="win-castle"><use href="#sprite-castle"/></svg>
+    <h2>🏰 You made it — and stayed clean!</h2>
+    <p>Final score: <strong id="finalScore">0</strong></p>
+    <p id="newBestText" class="new-best hidden">New best score!</p>
+    <button type="button" id="playAgainBtn" class="btn btn-roll">Play Again</button>
+  </div>
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>
