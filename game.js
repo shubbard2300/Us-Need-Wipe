@@ -9,13 +9,21 @@
   var WIPE_TIME_MS = 2400;
   var WIPE_TAPS_NEEDED = 3;
   var POOP_COUNT = 16;
+  var TURBO_COUNT = 3;
   var WAITER_DISTANCE = 8;
+  var THIRD_BUSH_TILE = 26;
   var BEST_KEY = 'usNeedWipeHighScore';
+
+  var WIPE_SUCCESS_MSGS = ['Nice wipe!', 'Squeaky clean!', 'Fresh as a daisy!', 'Crisis averted!', 'Smooth operator!'];
+  var WIPE_FAIL_MSGS = ['Too slow... skid marks!', 'Yikes, missed it!', 'Not clean enough!', 'Whoops, try again next time!'];
+  var CATCH_MSGS = ['An angry bush got you!', 'Ambushed by the bushes!', 'The bushes pounced!', 'Leaf me alone!!'];
 
   var board = document.getElementById('board');
   var scoreEl = document.getElementById('score');
   var bestEl = document.getElementById('best');
   var wipesEl = document.getElementById('wipes');
+  var streakEl = document.getElementById('streak');
+  var streakHud = document.getElementById('streakHud');
   var proximityEl = document.getElementById('proximity');
   var proximityHud = document.getElementById('proximityHud');
   var rollBtn = document.getElementById('rollBtn');
@@ -46,6 +54,7 @@
   var toastTimer = null;
 
   function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function pick(arr) { return arr[randInt(0, arr.length - 1)]; }
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function clamp(n, lo, hi) { return Math.max(lo, Math.min(hi, n)); }
 
@@ -131,6 +140,10 @@
         tone(659, 0.12, { type: 'triangle', gain: 0.14, delay: 0.09 });
         tone(784, 0.18, { type: 'triangle', gain: 0.16, delay: 0.18 });
       },
+      streakBonus: function () {
+        tone(880, 0.1, { type: 'square', gain: 0.12 });
+        tone(1046, 0.14, { type: 'square', gain: 0.13, delay: 0.08 });
+      },
       wipeFail: function () {
         noiseBurst(0.16, { freq: 500, freqTo: 100, gain: 0.16 });
         tone(180, 0.35, { type: 'sawtooth', slideTo: 70, gain: 0.16, delay: 0.05 });
@@ -140,9 +153,27 @@
         tone(220, 0.14, { type: 'sine', slideTo: 70, gain: 0.16, delay: 0.03 });
         tone(110, 0.18, { type: 'sine', slideTo: 45, gain: 0.12, delay: 0.06 });
       },
+      turbo: function () {
+        tone(660, 0.08, { type: 'square', gain: 0.14 });
+        tone(990, 0.08, { type: 'square', gain: 0.14, delay: 0.06 });
+        tone(1320, 0.14, { type: 'square', gain: 0.15, delay: 0.12 });
+      },
+      shieldBlock: function () {
+        tone(500, 0.12, { type: 'sine', gain: 0.15 });
+        tone(760, 0.16, { type: 'sine', gain: 0.15, delay: 0.08 });
+      },
+      growl: function () {
+        noiseBurst(0.14, { freq: 900, freqTo: 250, gain: 0.15 });
+        tone(85, 0.18, { type: 'sawtooth', slideTo: 50, gain: 0.13, delay: 0.02 });
+      },
+      thirdBush: function () {
+        tone(120, 0.3, { type: 'sawtooth', slideTo: 40, gain: 0.2 });
+        tone(90, 0.3, { type: 'sawtooth', slideTo: 35, gain: 0.18, delay: 0.12 });
+      },
       catchSfx: function () {
-        tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.2 });
-        tone(90, 0.3, { type: 'square', gain: 0.14, delay: 0.05 });
+        noiseBurst(0.2, { freq: 1000, freqTo: 150, gain: 0.2 });
+        tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.22 });
+        tone(90, 0.3, { type: 'square', gain: 0.16, delay: 0.05 });
       },
       win: function () {
         var notes = [523, 659, 784, 1046];
@@ -189,7 +220,7 @@
     board.appendChild(playerToken);
 
     bushTokens = [];
-    for (var i = 0; i < 2; i++) {
+    for (var i = 0; i < 3; i++) {
       var b = document.createElement('div');
       b.className = 'token bush';
       b.innerHTML = '<svg viewBox="0 0 100 100"><use href="#sprite-bush"/></svg>';
@@ -213,18 +244,36 @@
     return poop;
   }
 
+  function pickTurboTiles(poopSet) {
+    var turbo = new Set();
+    var guard = 0;
+    while (turbo.size < TURBO_COUNT && guard < 500) {
+      guard++;
+      var idx = randInt(4, FINISH - 2);
+      if (!poopSet.has(idx)) turbo.add(idx);
+    }
+    return turbo;
+  }
+
   function newState() {
+    var poopTiles = pickPoopTiles();
     return {
       playerIndex: 0,
       score: 0,
       wipes: 0,
+      streak: 0,
+      shield: false,
       busy: false,
       gameOver: false,
-      poopTiles: pickPoopTiles(),
+      thirdBushActive: false,
+      poopTiles: poopTiles,
       wipedTiles: new Set(),
+      turboTiles: pickTurboTiles(poopTiles),
+      consumedTurbo: new Set(),
       bushes: [
-        { index: -5 },
-        { index: -10 }
+        { index: -5, bias: randInt(-1, 1) },
+        { index: -10, bias: randInt(-1, 1) },
+        { index: -9999, bias: randInt(-1, 1) }
       ]
     };
   }
@@ -232,10 +281,14 @@
   function applyTileClasses() {
     for (var i = 0; i < TOTAL; i++) {
       var el = tileEls[i];
-      el.classList.remove('poop', 'wiped');
+      el.classList.remove('poop', 'wiped', 'turbo', 'used');
       if (state.poopTiles.has(i)) {
         el.classList.add('poop');
         if (state.wipedTiles.has(i)) el.classList.add('wiped');
+      }
+      if (state.turboTiles.has(i)) {
+        el.classList.add('turbo');
+        if (state.consumedTurbo.has(i)) el.classList.add('used');
       }
     }
   }
@@ -312,6 +365,8 @@
   function updateHud() {
     scoreEl.textContent = state.score;
     wipesEl.textContent = state.wipes;
+    streakEl.textContent = state.streak;
+    streakHud.classList.toggle('streak-hot', state.streak >= 2);
     var best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
     bestEl.textContent = Math.max(best, state.score);
 
@@ -410,16 +465,42 @@
   }
 
   async function moveBushes() {
-    var aggression = state.playerIndex > 24 ? 2 : 1;
+    var baseAggression = state.playerIndex > 24 ? 2 : 1;
     for (var i = 0; i < state.bushes.length; i++) {
       var b = state.bushes[i];
+
+      if (i === 2 && !state.thirdBushActive) {
+        if (state.playerIndex >= THIRD_BUSH_TILE) {
+          state.thirdBushActive = true;
+          b.index = Math.max(0, state.playerIndex - 12);
+          bushTokens[i].classList.add('active');
+          positionToken(bushTokens[i], b.index, 0.8);
+          Sound.thirdBush();
+          screenShake();
+          showToast('😱 A THIRD bush joins the chase!', 'bad');
+          await sleep(450);
+        }
+        continue;
+      }
+
       if (b.index < state.playerIndex) {
-        var step = aggression + randInt(0, 1);
-        b.index = Math.min(b.index + step, state.playerIndex);
+        if (Math.random() < 0.12) {
+          // this bush hesitates for a turn — unpredictable, not always closing in
+        } else {
+          var step = Math.max(1, baseAggression + b.bias + randInt(0, 2));
+          if (Math.random() < 0.18) {
+            step += randInt(2, 3);
+            bushTokens[i].classList.remove('snarl');
+            void bushTokens[i].offsetWidth;
+            bushTokens[i].classList.add('snarl');
+            Sound.growl();
+          }
+          b.index = Math.min(b.index + step, state.playerIndex);
+        }
       }
       if (b.index >= 0) bushTokens[i].classList.add('active');
       positionToken(bushTokens[i], b.index, 0.8);
-      await sleep(120);
+      await sleep(110);
     }
   }
 
@@ -431,20 +512,31 @@
     }
     if (caughtBy === -1) return false;
 
-    Sound.catchSfx();
-    screenShake();
     bushTokens[caughtBy].classList.remove('lunge');
     void bushTokens[caughtBy].offsetWidth;
     bushTokens[caughtBy].classList.add('lunge');
 
+    if (state.shield) {
+      state.shield = false;
+      playerToken.classList.remove('shielded');
+      Sound.shieldBlock();
+      showToast('🛡️ Shield blocked the bush!', 'good');
+      return false;
+    }
+
+    Sound.catchSfx();
+    screenShake();
+
     state.score = Math.max(0, state.score - 20);
     state.playerIndex = Math.max(0, state.playerIndex - 5);
+    state.streak = 0;
     positionToken(playerToken, state.playerIndex, 0.72);
     updateHud();
 
-    await showCaught('An angry bush got you! -20 points, knocked back 5 tiles.');
+    await showCaught(pick(CATCH_MSGS) + ' -20 points, knocked back 5 tiles.');
 
     for (var j = 0; j < state.bushes.length; j++) {
+      if (j === 2 && !state.thirdBushActive) continue;
       state.bushes[j].index = state.playerIndex - (6 + j * 3);
       if (state.bushes[j].index < 0) bushTokens[j].classList.remove('active');
       positionToken(bushTokens[j], state.bushes[j].index, 0.8);
@@ -492,22 +584,43 @@
     if (checkWin()) { state.busy = false; return; }
 
     var landedIndex = state.playerIndex;
+
+    if (state.turboTiles.has(landedIndex) && !state.consumedTurbo.has(landedIndex)) {
+      state.consumedTurbo.add(landedIndex);
+      tileEls[landedIndex].classList.add('used');
+      state.shield = true;
+      playerToken.classList.add('shielded');
+      Sound.turbo();
+      spawnSparkles(tileEls[landedIndex]);
+      showToast('⚡ Shield up! Next bush catch is blocked.', 'good');
+      await sleep(250);
+    }
+
     if (state.poopTiles.has(landedIndex) && !state.wipedTiles.has(landedIndex)) {
       Sound.plop();
       var success = await startWipeQTE();
       if (success) {
         state.wipedTiles.add(landedIndex);
         state.wipes++;
-        state.score += 30;
+        state.streak++;
+        var bonus = Math.min(state.streak - 1, 4) * 10;
+        var gained = 30 + bonus;
+        state.score += gained;
         tileEls[landedIndex].classList.add('wiped');
         Sound.wipeSuccess();
         spawnSparkles(tileEls[landedIndex]);
-        showToast('+30 Nice wipe!', 'good');
+        if (state.streak >= 2) {
+          Sound.streakBonus();
+          showToast('+' + gained + ' 🔥 ' + pick(WIPE_SUCCESS_MSGS) + ' (Streak x' + state.streak + ')', 'good');
+        } else {
+          showToast('+' + gained + ' ' + pick(WIPE_SUCCESS_MSGS), 'good');
+        }
       } else {
         state.score = Math.max(0, state.score - 15);
         state.playerIndex = Math.max(0, state.playerIndex - 3);
+        state.streak = 0;
         Sound.wipeFail();
-        showToast('Too slow... -15, knocked back 3 tiles', 'bad');
+        showToast(pick(WIPE_FAIL_MSGS) + ' -15, knocked back 3 tiles', 'bad');
         await stepBackAnimation();
       }
       updateHud();
@@ -533,7 +646,8 @@
     state = newState();
     applyTileClasses();
     repositionAll();
-    for (var i = 0; i < bushTokens.length; i++) bushTokens[i].classList.remove('active');
+    playerToken.classList.remove('shielded');
+    for (var i = 0; i < bushTokens.length; i++) bushTokens[i].classList.remove('active', 'snarl', 'lunge');
     waiterToken.classList.remove('active');
     var stray = winCard.querySelectorAll('.confetti');
     for (var s = 0; s < stray.length; s++) stray[s].remove();
