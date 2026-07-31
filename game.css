@@ -20,68 +20,68 @@ body{
 .sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .sky .landscape{width:100%;height:100%;display:block;}
 
-.landscape .birds-group{animation:birds-glide 9s ease-in-out infinite alternate;}
+.landscape .birds-group{animation:birds-glide 7s ease-in-out infinite alternate;}
 .landscape .bird{animation:bird-flap 0.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
 .landscape .bird-1{animation-delay:0s;}
 .landscape .bird-2{animation-delay:.15s;}
 .landscape .bird-3{animation-delay:.3s;}
 @keyframes birds-glide{
   0%{transform:translate(0,0);}
-  100%{transform:translate(46px,-16px);}
+  100%{transform:translate(160px,-55px);}
 }
 @keyframes bird-flap{
   0%,100%{transform:translateY(0) scaleY(1);}
-  50%{transform:translateY(-6px) scaleY(0.65);}
+  50%{transform:translateY(-8px) scaleY(0.6);}
 }
 
-.landscape .cloud-drift{animation:cloud-drift 16s ease-in-out infinite alternate;}
-.landscape .cloud-a{animation-duration:18s;}
-.landscape .cloud-b{animation-duration:22s;animation-direction:alternate-reverse;}
-.landscape .cloud-c{animation-duration:13s;}
+.landscape .cloud-drift{animation:cloud-drift 13s ease-in-out infinite alternate;}
+.landscape .cloud-a{animation-duration:14s;}
+.landscape .cloud-b{animation-duration:17s;animation-direction:alternate-reverse;}
+.landscape .cloud-c{animation-duration:10s;}
 @keyframes cloud-drift{
   0%{transform:translateX(0);}
-  100%{transform:translateX(60px);}
+  100%{transform:translateX(220px);}
 }
 
-.landscape .grass-blades path{animation:grass-sway 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
+.landscape .grass-blades path{animation:grass-sway 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
 .landscape .grass-blades path:nth-child(3n){animation-delay:0s;}
 .landscape .grass-blades path:nth-child(3n+1){animation-delay:.3s;}
 .landscape .grass-blades path:nth-child(3n+2){animation-delay:.6s;}
 @keyframes grass-sway{
   0%,100%{transform:skewX(0deg);}
-  50%{transform:skewX(6deg);}
+  50%{transform:skewX(15deg);}
 }
 
-.landscape .flag{transform-box:fill-box;transform-origin:0% 50%;animation:flag-wave 1.4s ease-in-out infinite;}
+.landscape .flag{transform-box:fill-box;transform-origin:0% 50%;animation:flag-wave 1s ease-in-out infinite;}
 .landscape .flag-a{animation-delay:.2s;}
 .landscape .flag-b{animation-delay:.4s;}
 @keyframes flag-wave{
   0%,100%{transform:skewY(0deg) scaleX(1);}
-  50%{transform:skewY(-10deg) scaleX(0.92);}
+  50%{transform:skewY(-24deg) scaleX(0.82);}
 }
 
-.landscape .sun-glow{animation:sun-pulse 6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
+.landscape .sun-glow{animation:sun-pulse 3.5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
 @keyframes sun-pulse{
-  0%,100%{opacity:0.7;transform:scale(1);}
-  50%{opacity:1;transform:scale(1.08);}
+  0%,100%{opacity:0.6;transform:scale(0.92);}
+  50%{opacity:1;transform:scale(1.3);}
 }
 
-.landscape .birds-group-2{animation-duration:15s;animation-direction:alternate-reverse;}
+.landscape .birds-group-2{animation-duration:12s;animation-direction:alternate-reverse;}
 
-.landscape .tree-sway{animation:tree-sway 3.4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
-.landscape .tree-sway-b{animation-delay:.5s;animation-duration:3s;}
+.landscape .tree-sway{animation:tree-sway 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
+.landscape .tree-sway-b{animation-delay:.5s;animation-duration:2s;}
 @keyframes tree-sway{
   0%,100%{transform:skewX(0deg) rotate(0deg);}
-  50%{transform:skewX(-3deg) rotate(-1deg);}
+  50%{transform:skewX(-9deg) rotate(-3deg);}
 }
 
-.landscape .waterfall rect{animation:waterfall-flow 0.9s linear infinite;}
+.landscape .waterfall rect{animation:waterfall-flow 0.7s linear infinite;}
 .landscape .waterfall rect:nth-child(2){animation-delay:.2s;}
 .landscape .waterfall rect:nth-child(3){animation-delay:.4s;}
 @keyframes waterfall-flow{
-  0%{transform:translateY(-10px);opacity:.3;}
-  50%{opacity:.8;}
-  100%{transform:translateY(10px);opacity:.3;}
+  0%{transform:translateY(-14px);opacity:.3;}
+  50%{opacity:.9;}
+  100%{transform:translateY(14px);opacity:.3;}
 }
 
 /* Background elements react on hover — re-enable pointer-events just for these shapes
@@ -515,18 +515,11 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .btn-roll{font-size:16px;padding:12px 20px;}
 }
 
+/* Note: gentle continuous scenery/character motion (clouds, birds, trees, flags, sun,
+   waterfall, idle bob/prowl/wave) is intentionally NOT disabled under reduced-motion —
+   WCAG's concern is fast/large/vestibular-triggering motion, not slow ambient sway.
+   Only the fast, jarring, or rapidly-pulsing effects are suppressed here. */
 @media (prefers-reduced-motion: reduce){
-  .landscape .birds-group,
-  .landscape .bird,
-  .landscape .cloud-drift,
-  .landscape .grass-blades path,
-  .landscape .flag,
-  .landscape .sun-glow,
-  .landscape .tree-sway,
-  .landscape .waterfall rect,
-  .token.player svg,
-  .token.bush.active svg,
-  .token.bush-waiter.active svg,
   .die-icon,
   .win-dancer,
   .hud-item.streak-hot,
@@ -536,15 +529,6 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   }
   .board-shell.shake{animation:none !important;}
   .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent{animation-duration:.01s !important;}
-  .landscape .cloud-drift:hover,
-  .landscape .bird:hover,
-  .landscape .tree-sway:hover,
-  .landscape .flag:hover,
-  .landscape .sun-glow:hover,
-  .landscape .waterfall:hover rect,
-  .token.player:hover svg,
-  .token.bush.active:hover svg,
-  .token.bush-waiter.active:hover svg,
   .tile.poop:not(.wiped):hover::after,
   .tile.turbo:not(.used):hover::after,
   .tile.finish:hover .finish-castle,
