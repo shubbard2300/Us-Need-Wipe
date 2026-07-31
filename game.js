@@ -75,6 +75,8 @@
     var musicOn = localStorage.getItem(MUSIC_KEY) !== '0';
     var musicTimer = null;
     var musicStep = 0;
+    var musicIntervalMs = 230;
+    var intensity = 0;
     var MELODY = [523, 659, 784, 659, 587, 784, 659, 523, 440, 523, 659, 523, 392, 523, 587, 659];
     var BASS = [131, 131, 131, 131, 196, 196, 196, 196, 131, 131, 131, 131, 175, 175, 196, 196];
 
@@ -142,9 +144,16 @@
     function playMusicStep() {
       if (muted || !musicOn) return;
       var i = musicStep % MELODY.length;
-      tone(MELODY[i], 0.16, { type: 'triangle', gain: 0.055 });
-      tone(BASS[i], 0.2, { type: 'sine', gain: 0.05 });
+      var pitchUp = intensity >= 2 ? 1.12 : 1;
+      tone(MELODY[i] * pitchUp, 0.16, { type: 'triangle', gain: 0.055 + intensity * 0.01 });
+      tone(BASS[i] * pitchUp, 0.2, { type: 'sine', gain: 0.05 + intensity * 0.01 });
       musicStep++;
+    }
+
+    function restartMusicTimer() {
+      if (!musicTimer) return;
+      clearInterval(musicTimer);
+      musicTimer = setInterval(playMusicStep, musicIntervalMs);
     }
 
     return {
@@ -160,10 +169,16 @@
       startMusic: function () {
         if (musicTimer || !musicOn) return;
         musicStep = 0;
-        musicTimer = setInterval(playMusicStep, 230);
+        musicTimer = setInterval(playMusicStep, musicIntervalMs);
       },
       stopMusic: function () {
         if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+      },
+      setIntensity: function (level) {
+        if (intensity === level) return;
+        intensity = level;
+        musicIntervalMs = level >= 2 ? 165 : (level === 1 ? 195 : 230);
+        restartMusicTimer();
       },
       roll: function () {
         for (var i = 0; i < 4; i++) tone(300 + randInt(-40, 40), 0.05, { type: 'square', gain: 0.07, delay: i * 0.07 });
@@ -209,6 +224,10 @@
         noiseBurst(0.2, { freq: 1000, freqTo: 150, gain: 0.2 });
         tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.22 });
         tone(90, 0.3, { type: 'square', gain: 0.16, delay: 0.05 });
+      },
+      closeCall: function () {
+        tone(392, 0.1, { type: 'sine', gain: 0.12 });
+        tone(587, 0.16, { type: 'sine', gain: 0.14, delay: 0.09 });
       },
       win: function () {
         var notes = [523, 659, 784, 1046];
@@ -423,6 +442,7 @@
     toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { toastEl.className = 'toast'; }, 1500);
+    announce(text);
   }
 
   function spawnSparkles(tileEl) {
@@ -467,6 +487,18 @@
     boardShell.classList.add('shake');
   }
 
+  function nearestBushDistance() {
+    var nearest = Infinity;
+    for (var i = 0; i < state.bushes.length; i++) {
+      var b = state.bushes[i];
+      if (b.index >= 0) {
+        var dist = state.playerIndex - b.index;
+        if (dist < nearest) nearest = dist;
+      }
+    }
+    return nearest;
+  }
+
   function updateHud() {
     scoreEl.textContent = state.score;
     wipesEl.textContent = state.wipes;
@@ -476,30 +508,50 @@
     var best = leaderboard.length ? leaderboard[0] : 0;
     bestEl.textContent = Math.max(best, state.score);
 
-    var nearest = Infinity;
-    for (var i = 0; i < state.bushes.length; i++) {
-      var b = state.bushes[i];
-      if (b.index >= 0) {
-        var dist = state.playerIndex - b.index;
-        if (dist < nearest) nearest = dist;
-      }
-    }
+    var nearest = nearestBushDistance();
     if (nearest === Infinity) {
       proximityEl.textContent = 'far';
       proximityHud.classList.remove('danger');
+      Sound.setIntensity(0);
     } else if (nearest <= 4) {
       proximityEl.textContent = 'DANGER!';
       proximityHud.classList.add('danger');
+      Sound.setIntensity(2);
     } else if (nearest <= 10) {
       proximityEl.textContent = 'near';
       proximityHud.classList.remove('danger');
+      Sound.setIntensity(1);
     } else {
       proximityEl.textContent = 'far';
       proximityHud.classList.remove('danger');
+      Sound.setIntensity(0);
     }
 
     var toFinish = FINISH - state.playerIndex;
     waiterToken.classList.toggle('active', toFinish > 0 && toFinish <= WAITER_DISTANCE);
+  }
+
+  function scrollPlayerIntoView() {
+    playerToken.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+  }
+
+  function spawnFloatingScore(el, text, kind) {
+    var boardRect = board.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+    var cx = r.left - boardRect.left + r.width / 2;
+    var cy = r.top - boardRect.top;
+    var s = document.createElement('span');
+    s.className = 'floating-score ' + (kind || '');
+    s.textContent = text;
+    s.style.left = cx + 'px';
+    s.style.top = cy + 'px';
+    board.appendChild(s);
+    s.addEventListener('animationend', function () { this.remove(); });
+  }
+
+  var ariaLive = document.getElementById('ariaLive');
+  function announce(text) {
+    if (ariaLive) ariaLive.textContent = text;
   }
 
   async function stepPlayerTo(target) {
@@ -626,12 +678,14 @@
       state.shield = false;
       playerToken.classList.remove('shielded');
       Sound.shieldBlock();
+      spawnFloatingScore(tileEls[state.playerIndex], 'BLOCKED!', 'good');
       showToast('🛡️ Shield blocked the bush!', 'good');
       return false;
     }
 
     Sound.catchSfx();
     screenShake();
+    spawnFloatingScore(tileEls[state.playerIndex], '-20', 'bad');
 
     state.score = Math.max(0, state.score - 20);
     state.playerIndex = Math.max(0, state.playerIndex - 5);
@@ -640,6 +694,7 @@
     updateHud();
 
     await showCaught(pick(CATCH_MSGS) + ' -20 points, knocked back 5 tiles.');
+    scrollPlayerIntoView();
 
     for (var j = 0; j < state.bushes.length; j++) {
       if (j === 2 && !state.thirdBushActive) continue;
@@ -662,6 +717,7 @@
       renderLeaderboard(newBoard, state.score);
       finalScoreEl.textContent = state.score;
       newBestText.classList.toggle('hidden', !isNew);
+      spawnFloatingScore(tileEls[FINISH], '+100', 'good');
       updateHud();
       winOverlay.classList.remove('hidden');
       Sound.win();
@@ -689,6 +745,7 @@
 
     var target = Math.min(state.playerIndex + roll, FINISH);
     await stepPlayerTo(target);
+    scrollPlayerIntoView();
 
     if (checkWin()) { state.busy = false; return; }
 
@@ -718,6 +775,7 @@
         tileEls[landedIndex].classList.add('wiped');
         Sound.wipeSuccess();
         spawnSparkles(tileEls[landedIndex]);
+        spawnFloatingScore(tileEls[landedIndex], '+' + gained, 'good');
         if (state.streak >= 2) {
           Sound.streakBonus();
           showToast('+' + gained + ' 🔥 ' + pick(WIPE_SUCCESS_MSGS) + ' (Streak x' + state.streak + ')', 'good');
@@ -729,17 +787,30 @@
         state.playerIndex = Math.max(0, state.playerIndex - 3);
         state.streak = 0;
         Sound.wipeFail();
+        spawnFloatingScore(tileEls[landedIndex], '-15', 'bad');
         showToast(pick(WIPE_FAIL_MSGS) + ' -15, knocked back 3 tiles', 'bad');
         await stepBackAnimation();
+        scrollPlayerIntoView();
       }
       updateHud();
     }
 
+    var hadShieldBeforeBushMove = state.shield;
     await moveBushes();
     updateHud();
 
     var wasCaught = await checkCatch();
-    if (!wasCaught && checkWin()) { state.busy = false; return; }
+    if (!wasCaught) {
+      var shieldConsumedThisTurn = hadShieldBeforeBushMove && !state.shield;
+      if (!shieldConsumedThisTurn && nearestBushDistance() <= 3) {
+        state.score += 15;
+        Sound.closeCall();
+        spawnFloatingScore(playerToken, '+15', 'good');
+        showToast('😅 Close call! +15', 'good');
+        updateHud();
+      }
+      if (checkWin()) { state.busy = false; return; }
+    }
 
     state.busy = false;
     dieFace.textContent = '';

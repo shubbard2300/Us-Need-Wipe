@@ -333,6 +333,34 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 .toast.good{background:#1f8a1f;}
 .toast.bad{background:#c62828;}
 
+.sr-only{
+  position:absolute;
+  width:1px;height:1px;
+  padding:0;margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  white-space:nowrap;
+  border:0;
+}
+
+.floating-score{
+  position:absolute;
+  transform:translate(-50%,0);
+  font-weight:800;
+  font-size:clamp(14px,3vw,20px);
+  pointer-events:none;
+  z-index:8;
+  animation:float-score 1s ease-out forwards;
+  text-shadow:1px 1px 0 rgba(255,255,255,.7);
+}
+.floating-score.good{color:#1f8a1f;}
+.floating-score.bad{color:#c62828;}
+@keyframes float-score{
+  0%{transform:translate(-50%,0) scale(0.8);opacity:1;}
+  30%{transform:translate(-50%,-10px) scale(1.15);opacity:1;}
+  100%{transform:translate(-50%,-50px) scale(1);opacity:0;}
+}
+
 .sparkle{
   position:absolute;
   font-size:18px;
@@ -372,6 +400,18 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   75%{transform:translateX(4px);}
 }
 .wipe-emoji{font-size:56px;line-height:1;}
+.wipe-emoji.poop-king{position:relative;display:inline-block;animation:poop-king-bob .5s ease-in-out infinite;}
+.wipe-emoji.poop-king .crown{
+  position:absolute;
+  top:-24px;left:50%;
+  transform:translateX(-50%) rotate(-10deg);
+  font-size:32px;
+  filter:drop-shadow(1px 2px 1px rgba(0,0,0,.3));
+}
+@keyframes poop-king-bob{
+  0%,100%{transform:rotate(-4deg);}
+  50%{transform:rotate(4deg);}
+}
 .wipe-card h2{margin:6px 0 14px;}
 .wipe-timerbar{height:10px;background:#eee;border:2px solid var(--ink);border-radius:6px;overflow:hidden;margin-bottom:10px;}
 .wipe-timerbar-fill{height:100%;background:#ff8a3d;width:100%;transition:width .05s linear;}
@@ -490,7 +530,8 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .die-icon,
   .win-dancer,
   .hud-item.streak-hot,
-  .tile.turbo:not(.used)::after{
+  .tile.turbo:not(.used)::after,
+  .wipe-emoji.poop-king{
     animation:none !important;
   }
   .board-shell.shake{animation:none !important;}
