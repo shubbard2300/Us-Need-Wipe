@@ -54,6 +54,33 @@
       </g>
     </symbol>
 
+    <symbol id="sprite-bush-waiter" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="92" rx="38" ry="6" fill="#000" opacity=".15"/>
+      <g stroke="#1f5c1f" stroke-width="3" stroke-linejoin="round">
+        <circle cx="30" cy="34" r="20" fill="#4fd44f"/>
+        <circle cx="70" cy="34" r="20" fill="#3fc23f"/>
+        <circle cx="50" cy="22" r="22" fill="#5be05b"/>
+        <circle cx="24" cy="55" r="22" fill="#38b038"/>
+        <circle cx="76" cy="55" r="22" fill="#2fa32f"/>
+        <circle cx="50" cy="60" r="26" fill="#43c943"/>
+      </g>
+      <path d="M24 44 q10 -8 20 -1" fill="none" stroke="#1f5c1f" stroke-width="5" stroke-linecap="round"/>
+      <path d="M76 44 q-10 -10 -20 -2" fill="none" stroke="#1f5c1f" stroke-width="5" stroke-linecap="round"/>
+      <ellipse cx="37" cy="53" rx="9" ry="10" fill="#fff" stroke="#1f5c1f" stroke-width="2.5"/>
+      <ellipse cx="65" cy="53" rx="8" ry="9" fill="#fff" stroke="#1f5c1f" stroke-width="2.5"/>
+      <circle cx="39" cy="55" r="4.5" fill="#25314a"/>
+      <circle cx="66" cy="54" r="4" fill="#25314a"/>
+      <circle cx="37" cy="53" r="1.4" fill="#fff"/>
+      <path d="M40 70 q14 8 26 -1" fill="none" stroke="#1f5c1f" stroke-width="3" stroke-linecap="round"/>
+      <polygon points="45,78 50,84 55,78 50,74" fill="#1f2b3a" stroke="#111" stroke-width="1.5"/>
+      <path d="M6 40 q-14 -6 -20 -20 q10 2 16 10 q2 -10 -4 -22 q12 4 16 18 q6 -8 4 -20 q10 8 8 22 q10 -4 16 2 q-14 12 -30 14 Z" fill="#f2f4f6" stroke="#4a5560" stroke-width="3" class="waiter-hand" transform="translate(4,-2) scale(0.62)"/>
+      <ellipse cx="14" cy="38" rx="11" ry="9" fill="#f2f4f6" stroke="#4a5560" stroke-width="2.5"/>
+      <g stroke="#7a8894" stroke-width="2.5" stroke-linejoin="round">
+        <path d="M78 66 q18 6 18 26 l-30 6 q-2 -22 12 -32 Z" fill="#e6ebf0"/>
+      </g>
+      <ellipse cx="86" cy="70" rx="10" ry="9" fill="#c9d1d9" stroke="#5b6572" stroke-width="2.5"/>
+    </symbol>
+
     <symbol id="sprite-castle" viewBox="0 0 200 160">
       <path d="M0 160 L0 110 Q50 70 100 95 Q150 70 200 110 L200 160 Z" fill="#3fae52"/>
       <path d="M0 160 L0 130 Q60 100 100 118 Q140 100 200 130 L200 160 Z" fill="#2f9642"/>
@@ -72,10 +99,136 @@
   </defs>
 </svg>
 
-<div class="sky">
-  <div class="cloud c1"></div>
-  <div class="cloud c2"></div>
-  <div class="cloud c3"></div>
+<!-- Full-scene background: purple sky, clouds, rolling hills and a castle-on-a-cliff -->
+<div class="sky" aria-hidden="true">
+  <svg class="landscape" viewBox="0 0 1800 1200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#8f8fe0"/>
+        <stop offset="55%" stop-color="#b6b5ee"/>
+        <stop offset="100%" stop-color="#dcd9f8"/>
+      </linearGradient>
+      <linearGradient id="castleStone" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#eaf3e5"/>
+        <stop offset="100%" stop-color="#c7d9c2"/>
+      </linearGradient>
+    </defs>
+
+    <rect x="0" y="0" width="1800" height="1200" fill="url(#skyGrad)"/>
+
+    <g stroke="#33324a" stroke-width="4" fill="none" stroke-linecap="round">
+      <path d="M905 215 l14 -10 l14 10"/>
+      <path d="M945 178 l14 -10 l14 10"/>
+      <path d="M980 208 l12 -9 l12 9"/>
+    </g>
+
+    <path d="M0 860 L120 760 L230 830 L360 720 L520 820 L660 740 L820 830 L980 760 L1150 840 L1800 780 L1800 1000 L0 1000 Z" fill="#8f86c9" opacity="0.55"/>
+
+    <g fill="#fbfaff" opacity="0.95">
+      <circle cx="150" cy="330" r="90"/>
+      <circle cx="250" cy="300" r="120"/>
+      <circle cx="360" cy="340" r="80"/>
+      <rect x="110" y="330" width="330" height="90" rx="45"/>
+    </g>
+    <g fill="#fbfaff" opacity="0.95">
+      <circle cx="1560" cy="330" r="110"/>
+      <circle cx="1680" cy="290" r="90"/>
+      <circle cx="1750" cy="370" r="130"/>
+      <rect x="1500" y="340" width="330" height="100" rx="50"/>
+    </g>
+    <g fill="#fbfaff" opacity="0.85">
+      <circle cx="700" cy="520" r="60"/>
+      <circle cx="770" cy="500" r="80"/>
+      <circle cx="850" cy="530" r="55"/>
+      <rect x="670" y="520" width="230" height="60" rx="30"/>
+    </g>
+
+    <path d="M0 1200 L0 780 Q220 660 420 760 Q620 850 900 780 Q1150 720 1800 850 L1800 1200 Z" fill="#2f9642"/>
+    <path d="M0 1200 L0 880 Q260 800 520 870 Q760 930 1050 880 Q1300 840 1800 920 L1800 1200 Z" fill="#3fae52"/>
+
+    <g stroke="#2a2450" stroke-width="4" stroke-linejoin="round">
+      <g fill="#2f8f4a">
+        <circle cx="140" cy="880" r="70"/>
+        <circle cx="220" cy="860" r="90"/>
+        <circle cx="90" cy="930" r="60"/>
+        <circle cx="260" cy="930" r="55"/>
+      </g>
+      <g fill="#38a656">
+        <circle cx="330" cy="960" r="50"/>
+        <circle cx="400" cy="940" r="65"/>
+        <circle cx="470" cy="975" r="45"/>
+      </g>
+    </g>
+
+    <path d="M1180 1200 L1180 940 Q1250 850 1330 880 Q1380 830 1440 860 Q1500 800 1560 850 Q1650 830 1720 900 Q1780 930 1800 980 L1800 1200 Z" fill="#3fae52"/>
+    <path d="M1220 1200 L1220 1010 Q1300 960 1380 990 Q1450 950 1520 980 Q1600 950 1680 1000 Q1750 1020 1800 1060 L1800 1200 Z" fill="#2f9642"/>
+
+    <g fill="url(#castleStone)" stroke="#4b5a6b" stroke-width="4">
+      <path d="M1260 1010 Q1450 950 1660 1010 L1660 1060 Q1450 1010 1260 1060 Z"/>
+    </g>
+    <g fill="#4b5a6b">
+      <rect x="1270" y="995" width="14" height="18"/>
+      <rect x="1310" y="985" width="14" height="18"/>
+      <rect x="1596" y="985" width="14" height="18"/>
+      <rect x="1636" y="995" width="14" height="18"/>
+    </g>
+    <path d="M1420 1060 q30 -20 60 0 l0 60 l-60 0 Z" fill="#2a2038"/>
+
+    <g fill="url(#castleStone)" stroke="#4b5a6b" stroke-width="4" stroke-linejoin="round">
+      <rect x="1330" y="820" width="46" height="170"/>
+      <rect x="1560" y="820" width="46" height="170"/>
+      <rect x="1420" y="760" width="70" height="230"/>
+      <rect x="1290" y="880" width="34" height="110"/>
+      <rect x="1610" y="880" width="34" height="110"/>
+    </g>
+    <g fill="#5b4fae" stroke="#33265f" stroke-width="4" stroke-linejoin="round">
+      <polygon points="1330,820 1353,760 1376,820"/>
+      <polygon points="1560,820 1583,760 1606,820"/>
+      <polygon points="1420,760 1455,660 1490,760"/>
+      <polygon points="1290,880 1307,840 1324,880"/>
+      <polygon points="1610,880 1627,840 1644,880"/>
+    </g>
+    <line x1="1455" y1="660" x2="1455" y2="630" stroke="#4b5a6b" stroke-width="3"/>
+    <path d="M1455 630 l30 10 l-30 10 Z" fill="#f4c542"/>
+    <g fill="#f4c542">
+      <path d="M1353 760 l22 8 l-22 8 Z"/>
+      <path d="M1583 760 l22 8 l-22 8 Z"/>
+    </g>
+    <g fill="#2a2038" opacity="0.85">
+      <ellipse cx="1353" cy="900" rx="8" ry="12"/>
+      <ellipse cx="1583" cy="900" rx="8" ry="12"/>
+      <ellipse cx="1455" cy="860" rx="10" ry="16"/>
+    </g>
+
+    <rect x="0" y="1120" width="1800" height="80" fill="#2fdc4a"/>
+    <g stroke="#c8f24a" stroke-width="6" stroke-linecap="round" fill="none">
+      <path d="M20 1200 Q10 1160 14 1120"/>
+      <path d="M110 1200 Q100 1155 106 1110"/>
+      <path d="M200 1200 Q212 1160 204 1115"/>
+      <path d="M290 1200 Q280 1150 288 1105"/>
+      <path d="M380 1200 Q392 1160 384 1112"/>
+      <path d="M470 1200 Q460 1150 468 1108"/>
+      <path d="M560 1200 Q572 1160 564 1115"/>
+      <path d="M650 1200 Q640 1150 648 1105"/>
+      <path d="M740 1200 Q752 1160 744 1112"/>
+      <path d="M830 1200 Q820 1150 828 1108"/>
+      <path d="M920 1200 Q932 1160 924 1115"/>
+      <path d="M1010 1200 Q1000 1150 1008 1105"/>
+      <path d="M1100 1200 Q1112 1160 1104 1112"/>
+      <path d="M1190 1200 Q1180 1150 1188 1108"/>
+      <path d="M1280 1200 Q1292 1160 1284 1115"/>
+      <path d="M1370 1200 Q1360 1150 1368 1105"/>
+      <path d="M1460 1200 Q1472 1160 1464 1112"/>
+      <path d="M1550 1200 Q1540 1150 1548 1108"/>
+      <path d="M1640 1200 Q1652 1160 1644 1115"/>
+      <path d="M1730 1200 Q1720 1150 1728 1105"/>
+    </g>
+    <g>
+      <circle cx="1240" cy="1180" r="10" fill="#ffd6ea"/>
+      <circle cx="1265" cy="1188" r="7" fill="#fff"/>
+      <circle cx="1310" cy="1178" r="8" fill="#ffd6ea"/>
+    </g>
+  </svg>
 </div>
 
 <main class="wrap">
@@ -85,6 +238,7 @@
   </header>
 
   <div class="hud">
+    <button type="button" id="muteBtn" class="mute-btn" aria-label="Toggle sound">🔊</button>
     <div class="hud-item"><span class="hud-label">Score</span><span id="score">0</span></div>
     <div class="hud-item"><span class="hud-label">Best</span><span id="best">0</span></div>
     <div class="hud-item"><span class="hud-label">Wipes</span><span id="wipes">0</span></div>
@@ -96,7 +250,7 @@
   </div>
 
   <div class="controls">
-    <button type="button" id="rollBtn" class="btn btn-roll">🎲 Roll &amp; Move <span id="dieFace"></span></button>
+    <button type="button" id="rollBtn" class="btn btn-roll"><span class="die-icon" id="dieIcon">🎲</span> Roll &amp; Move <span id="dieFace"></span></button>
     <p class="hint">Press <kbd>Space</kbd> to roll. When you land on 💩, mash <kbd>W</kbd> or tap WIPE before the bar runs out.</p>
   </div>
 
@@ -105,7 +259,7 @@
 
 <!-- Wipe quick-time event -->
 <div id="wipeOverlay" class="overlay hidden">
-  <div class="wipe-card">
+  <div class="wipe-card" id="wipeCard">
     <div class="wipe-emoji">💩</div>
     <h2>UH OH — WIPE NOW!</h2>
     <div class="wipe-timerbar"><div id="wipeTimerFill" class="wipe-timerbar-fill"></div></div>
@@ -128,7 +282,7 @@
 
 <!-- Win screen -->
 <div id="winOverlay" class="overlay hidden">
-  <div class="wipe-card win-card">
+  <div class="wipe-card win-card" id="winCard">
     <svg viewBox="0 0 200 160" class="win-castle"><use href="#sprite-castle"/></svg>
     <h2>🏰 You made it — and stayed clean!</h2>
     <p>Final score: <strong id="finalScore">0</strong></p>
