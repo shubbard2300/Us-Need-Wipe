@@ -84,6 +84,27 @@ body{
   100%{transform:translateY(10px);opacity:.3;}
 }
 
+/* Background elements react on hover — re-enable pointer-events just for these shapes
+   so hovering them doesn't block clicks through the rest of the (pointer-events:none) scenery. */
+.landscape .cloud-drift,
+.landscape .bird,
+.landscape .tree-sway,
+.landscape .flag,
+.landscape .sun-glow,
+.landscape .castle-windows,
+.landscape .waterfall{
+  pointer-events:auto;
+  cursor:pointer;
+}
+.landscape .cloud-drift:hover{animation-duration:2.5s !important;}
+.landscape .bird:hover{animation-duration:0.2s !important;}
+.landscape .tree-sway:hover{animation-duration:0.5s !important;}
+.landscape .flag:hover{animation-duration:0.35s !important;}
+.landscape .sun-glow:hover{animation-duration:1.2s !important;}
+.landscape .waterfall:hover rect{animation-duration:0.35s !important;}
+.landscape .castle-windows{transition:filter .25s ease;}
+.landscape .castle-windows:hover{filter:drop-shadow(0 0 10px #ffd76b) brightness(1.6);}
+
 .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px 16px 60px;}
 
 .game-header{text-align:center;margin-bottom:10px;}
@@ -112,6 +133,8 @@ body{
 .hud-label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#6b6b60;}
 .hud-item--warn span:last-child{color:#1f8a1f;}
 .hud-item--warn.danger span:last-child{color:#c62828;}
+.hud-item{transition:transform .15s ease, box-shadow .15s ease;}
+.hud-item:hover{transform:translateY(-3px) scale(1.04);box-shadow:4px 5px 0 rgba(0,0,0,.2);}
 .hud-item.streak-hot span:last-child{color:#e07800;}
 .hud-item.streak-hot{animation:streak-pulse .5s ease;}
 @keyframes streak-pulse{
@@ -132,6 +155,7 @@ body{
   transition:transform .08s ease;
 }
 .mute-btn:active{transform:translateY(2px);}
+.mute-btn:hover{transform:scale(1.15) rotate(-8deg);box-shadow:4px 5px 0 rgba(0,0,0,.2);}
 
 .board-shell{
   background:#2f9642;
@@ -180,6 +204,21 @@ body{
 }
 .tile.finish .finish-castle{width:70%;height:70%;}
 
+.tile{transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;cursor:default;}
+.tile:hover{transform:translateY(-3px) scale(1.06);box-shadow:0 6px 10px rgba(0,0,0,.25);z-index:2;}
+.tile.poop:not(.wiped):hover::after{animation:poop-jiggle .35s ease-in-out infinite;}
+@keyframes poop-jiggle{
+  0%,100%{transform:rotate(-10deg) scale(1);}
+  50%{transform:rotate(10deg) scale(1.15);}
+}
+.tile.turbo:not(.used):hover::after{animation:turbo-pulse .35s ease-in-out infinite;filter:drop-shadow(0 0 6px #ffcf3d);}
+.tile.start:hover{filter:brightness(1.08);}
+.tile.finish:hover .finish-castle{animation:castle-glimmer .6s ease-in-out infinite;}
+@keyframes castle-glimmer{
+  0%,100%{filter:brightness(1);transform:scale(1);}
+  50%{filter:brightness(1.25);transform:scale(1.05);}
+}
+
 .token{
   position:absolute;
   width:11%;
@@ -189,20 +228,27 @@ body{
   filter:drop-shadow(2px 3px 1px rgba(0,0,0,.35));
 }
 .token svg{width:100%;height:100%;display:block;transform-origin:50% 60%;}
-.token.player{z-index:6;}
+.token.player{z-index:6;pointer-events:auto;cursor:pointer;}
 .token.player svg{animation:idle-bob 2.2s ease-in-out infinite;}
+.token.player:hover svg{animation:excited-wave .35s ease-in-out infinite;}
 .token.player.bounce{animation:bounce .3s ease;}
 .token.player.shielded{box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 0 16px 6px rgba(120,200,255,.9);border-radius:50%;}
-.token.bush{opacity:0;transition:left .3s cubic-bezier(.34,1.4,.64,1), top .3s cubic-bezier(.34,1.4,.64,1), opacity .3s ease;}
-.token.bush.active{opacity:1;}
+.token.bush{opacity:0;pointer-events:none;transition:left .3s cubic-bezier(.34,1.4,.64,1), top .3s cubic-bezier(.34,1.4,.64,1), opacity .3s ease;}
+.token.bush.active{opacity:1;pointer-events:auto;cursor:pointer;}
 .token.bush.active svg{animation:prowl 1s ease-in-out infinite;}
+.token.bush.active:hover svg{animation:bush-snarl .3s ease-in-out infinite;}
 .token.bush.lunge{animation:lunge .4s ease;}
 .token.bush.lunge svg{animation:none;}
 .token.bush.snarl svg{animation:bush-snarl .4s ease;}
 
-.token.bush-waiter{z-index:4;opacity:0;transition:opacity .4s ease;}
-.token.bush-waiter.active{opacity:1;}
+.token.bush-waiter{z-index:4;opacity:0;pointer-events:none;transition:opacity .4s ease;}
+.token.bush-waiter.active{opacity:1;pointer-events:auto;cursor:pointer;}
 .token.bush-waiter.active svg{animation:friendly-wave 1.3s ease-in-out infinite;}
+.token.bush-waiter.active:hover svg{animation:friendly-wave .3s ease-in-out infinite;}
+@keyframes excited-wave{
+  0%,100%{transform:translateY(0) rotate(-8deg) scale(1);}
+  50%{transform:translateY(-10%) rotate(8deg) scale(1.08);}
+}
 
 @keyframes bounce{
   0%{transform:translateY(0) scale(1);}
@@ -251,8 +297,10 @@ body{
   box-shadow:3px 3px 0 rgba(0,0,0,.25);
   transition:transform .08s ease;
 }
+.btn:hover:not(:disabled){transform:translateY(-3px) scale(1.03);box-shadow:5px 7px 0 rgba(0,0,0,.25);}
 .btn:active{transform:translateY(2px);box-shadow:1px 1px 0 rgba(0,0,0,.25);}
 .btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-roll:hover:not(:disabled) .die-icon{animation:dice-spin .6s ease-in-out infinite;}
 .btn-roll{background:#ffd23f;color:#3a2b00;}
 .btn-wipe{background:#8fd9ff;color:#0a3550;font-size:22px;padding:18px 40px;}
 .hint{margin-top:10px;font-size:13px;color:#3a3a55;text-shadow:1px 1px 0 rgba(255,255,255,.5);}
@@ -399,6 +447,10 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   padding:4px;
 }
 .footer-dot{margin:0 4px;opacity:.6;}
+.footer-link{transition:transform .15s ease, color .15s ease;display:inline-block;}
+.footer-link:hover{color:#e07800;transform:translateY(-2px) scale(1.05);}
+.modal-close{transition:transform .15s ease;}
+.modal-close:hover{transform:rotate(90deg) scale(1.15);}
 
 .info-card{max-width:440px;text-align:left;position:relative;padding-top:36px;}
 .info-card h2{text-align:center;}
@@ -443,4 +495,19 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   }
   .board-shell.shake{animation:none !important;}
   .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent{animation-duration:.01s !important;}
+  .landscape .cloud-drift:hover,
+  .landscape .bird:hover,
+  .landscape .tree-sway:hover,
+  .landscape .flag:hover,
+  .landscape .sun-glow:hover,
+  .landscape .waterfall:hover rect,
+  .token.player:hover svg,
+  .token.bush.active:hover svg,
+  .token.bush-waiter.active:hover svg,
+  .tile.poop:not(.wiped):hover::after,
+  .tile.turbo:not(.used):hover::after,
+  .tile.finish:hover .finish-castle,
+  .btn-roll:hover:not(:disabled) .die-icon{
+    animation:none !important;
+  }
 }
