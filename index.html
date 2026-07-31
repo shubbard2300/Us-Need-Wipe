@@ -120,9 +120,20 @@
         <stop offset="0%" stop-color="#eaf3e5"/>
         <stop offset="100%" stop-color="#c7d9c2"/>
       </linearGradient>
+      <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fff9d6" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="#fff9d6" stop-opacity="0"/>
+      </radialGradient>
     </defs>
 
     <rect x="0" y="0" width="1800" height="1200" fill="url(#skyGrad)"/>
+
+    <circle class="sun-glow" cx="260" cy="200" r="140" fill="url(#sunGrad)"/>
+
+    <g class="birds-group birds-group-2" stroke="#33324a" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5">
+      <path class="bird bird-1" d="M1200 140 l10 -7 l10 7"/>
+      <path class="bird bird-2" d="M1230 165 l10 -7 l10 7"/>
+    </g>
 
     <g class="birds-group" stroke="#33324a" stroke-width="4" fill="none" stroke-linecap="round">
       <path class="bird bird-1" d="M905 215 l14 -10 l14 10"/>
@@ -155,13 +166,13 @@
     <path d="M0 1200 L0 880 Q260 800 520 870 Q760 930 1050 880 Q1300 840 1800 920 L1800 1200 Z" fill="#3fae52"/>
 
     <g stroke="#2a2450" stroke-width="4" stroke-linejoin="round">
-      <g fill="#2f8f4a">
+      <g class="tree-sway tree-sway-a" fill="#2f8f4a">
         <circle cx="140" cy="880" r="70"/>
         <circle cx="220" cy="860" r="90"/>
         <circle cx="90" cy="930" r="60"/>
         <circle cx="260" cy="930" r="55"/>
       </g>
-      <g fill="#38a656">
+      <g class="tree-sway tree-sway-b" fill="#38a656">
         <circle cx="330" cy="960" r="50"/>
         <circle cx="400" cy="940" r="65"/>
         <circle cx="470" cy="975" r="45"/>
@@ -181,6 +192,11 @@
       <rect x="1636" y="995" width="14" height="18"/>
     </g>
     <path d="M1420 1060 q30 -20 60 0 l0 60 l-60 0 Z" fill="#2a2038"/>
+    <g class="waterfall" opacity="0.55">
+      <rect x="1432" y="1068" width="6" height="46" fill="#bfe6ff"/>
+      <rect x="1444" y="1068" width="6" height="46" fill="#d8f2ff"/>
+      <rect x="1456" y="1068" width="6" height="46" fill="#bfe6ff"/>
+    </g>
 
     <g fill="url(#castleStone)" stroke="#4b5a6b" stroke-width="4" stroke-linejoin="round">
       <rect x="1330" y="820" width="46" height="170"/>
@@ -247,6 +263,8 @@
 
   <div class="hud">
     <button type="button" id="muteBtn" class="mute-btn" aria-label="Toggle sound">🔊</button>
+    <button type="button" id="musicBtn" class="mute-btn" aria-label="Toggle music">🎵</button>
+    <button type="button" id="helpBtn" class="mute-btn" aria-label="How to play">❓</button>
     <div class="hud-item"><span class="hud-label">Score</span><span id="score">0</span></div>
     <div class="hud-item"><span class="hud-label">Best</span><span id="best">0</span></div>
     <div class="hud-item"><span class="hud-label">Wipes</span><span id="wipes">0</span></div>
@@ -264,7 +282,72 @@
   </div>
 
   <div id="toast" class="toast"></div>
+
+  <footer class="site-footer">
+    <button type="button" id="supportBtn" class="footer-link">Support</button>
+    <span class="footer-dot">·</span>
+    <button type="button" id="privacyBtn" class="footer-link">Privacy Policy</button>
+    <span class="footer-dot">·</span>
+    <button type="button" id="faqBtn" class="footer-link">FAQ</button>
+  </footer>
 </main>
+
+<!-- How to play -->
+<div id="introOverlay" class="overlay hidden">
+  <div class="wipe-card intro-card">
+    <h2>🧻 How to Play</h2>
+    <ul class="how-to-list">
+      <li>🎲 Roll the die to move toward the castle.</li>
+      <li>💩 Land on poop? Mash <kbd>W</kbd> or tap WIPE before the timer runs out.</li>
+      <li>✅ Wipe in time for points. Miss it and you're knocked back.</li>
+      <li>🔥 Chain wipes for a streak bonus.</li>
+      <li>⚡ Lucky tiles grant a shield that blocks one bush catch.</li>
+      <li>🌳 Angry bushes chase you — get caught and you lose points and ground. A third bush joins late!</li>
+      <li>🏰 Reach the castle to win.</li>
+    </ul>
+    <button type="button" id="introCloseBtn" class="btn btn-roll">Let's go!</button>
+  </div>
+</div>
+
+<!-- Support -->
+<div id="supportOverlay" class="overlay hidden">
+  <div class="wipe-card info-card">
+    <button type="button" class="modal-close" data-close="supportOverlay" aria-label="Close">✕</button>
+    <h2>🛟 Support</h2>
+    <p>Us Need Wipe is an independent hobby project — there's no support team behind it, just the code.</p>
+    <p>Found a bug, have an idea, or just want to yell about the angry bushes? Open an issue on the project's GitHub page:</p>
+    <p><a href="https://github.com/shubbard2300/Us-Need-Wipe/issues" target="_blank" rel="noopener">github.com/shubbard2300/Us-Need-Wipe/issues</a></p>
+  </div>
+</div>
+
+<!-- Privacy -->
+<div id="privacyOverlay" class="overlay hidden">
+  <div class="wipe-card info-card">
+    <button type="button" class="modal-close" data-close="privacyOverlay" aria-label="Close">✕</button>
+    <h2>🔒 Privacy Policy</h2>
+    <p>This game doesn't send your data anywhere. There's no account, no server, no analytics, and no tracking.</p>
+    <p>The only data stored is in your browser's local storage, on your own device:</p>
+    <ul class="how-to-list">
+      <li>Your high score and top-5 leaderboard</li>
+      <li>Whether you've seen the "How to Play" intro</li>
+      <li>Your sound and music on/off preferences</li>
+    </ul>
+    <p>Clearing your browser data or local storage removes all of it. Nothing is ever uploaded or shared.</p>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div id="faqOverlay" class="overlay hidden">
+  <div class="wipe-card info-card">
+    <button type="button" class="modal-close" data-close="faqOverlay" aria-label="Close">✕</button>
+    <h2>❓ FAQ</h2>
+    <p><strong>How do I play?</strong><br>Roll the die to move toward the castle. Land on 💩 and mash <kbd>W</kbd> or tap WIPE before the timer runs out. Watch out for the angry bushes chasing you.</p>
+    <p><strong>Is my score saved?</strong><br>Yes — your best score and top 5 runs are saved locally in your browser, no account needed.</p>
+    <p><strong>Can I turn off the sound or music?</strong><br>Yes, use the 🔊 and 🎵 buttons above the board. Your preference is remembered.</p>
+    <p><strong>What do the ⚡ tiles do?</strong><br>They grant a one-time shield that blocks the next bush catch.</p>
+    <p><strong>Does it work on mobile?</strong><br>Yes, tap to roll and tap WIPE — no keyboard required.</p>
+  </div>
+</div>
 
 <!-- Wipe quick-time event -->
 <div id="wipeOverlay" class="overlay hidden">
@@ -297,6 +380,7 @@
     <h2>🏰 You made it — and stayed clean!</h2>
     <p>Final score: <strong id="finalScore">0</strong></p>
     <p id="newBestText" class="new-best hidden">New best score!</p>
+    <ol id="leaderboardList" class="leaderboard"></ol>
     <button type="button" id="playAgainBtn" class="btn btn-roll">Play Again</button>
   </div>
 </div>

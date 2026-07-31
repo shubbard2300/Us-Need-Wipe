@@ -12,7 +12,9 @@
   var TURBO_COUNT = 3;
   var WAITER_DISTANCE = 8;
   var THIRD_BUSH_TILE = 26;
-  var BEST_KEY = 'usNeedWipeHighScore';
+  var LEADERBOARD_KEY = 'usNeedWipeLeaderboard';
+  var LEADERBOARD_SIZE = 5;
+  var INTRO_SEEN_KEY = 'usNeedWipeSeenIntro';
 
   var WIPE_SUCCESS_MSGS = ['Nice wipe!', 'Squeaky clean!', 'Fresh as a daisy!', 'Crisis averted!', 'Smooth operator!'];
   var WIPE_FAIL_MSGS = ['Too slow... skid marks!', 'Yikes, missed it!', 'Not clean enough!', 'Whoops, try again next time!'];
@@ -30,7 +32,12 @@
   var dieFace = document.getElementById('dieFace');
   var toastEl = document.getElementById('toast');
   var muteBtn = document.getElementById('muteBtn');
+  var musicBtn = document.getElementById('musicBtn');
+  var helpBtn = document.getElementById('helpBtn');
+  var introOverlay = document.getElementById('introOverlay');
+  var introCloseBtn = document.getElementById('introCloseBtn');
   var boardShell = document.querySelector('.board-shell');
+  var leaderboardList = document.getElementById('leaderboardList');
 
   var wipeOverlay = document.getElementById('wipeOverlay');
   var wipeCard = document.getElementById('wipeCard');
@@ -63,7 +70,13 @@
     var AudioCtx = window.AudioContext || window.webkitAudioContext;
     var ctx = null;
     var MUTE_KEY = 'usNeedWipeMuted';
+    var MUSIC_KEY = 'usNeedWipeMusicOn';
     var muted = localStorage.getItem(MUTE_KEY) === '1';
+    var musicOn = localStorage.getItem(MUSIC_KEY) !== '0';
+    var musicTimer = null;
+    var musicStep = 0;
+    var MELODY = [523, 659, 784, 659, 587, 784, 659, 523, 440, 523, 659, 523, 392, 523, 587, 659];
+    var BASS = [131, 131, 131, 131, 196, 196, 196, 196, 131, 131, 131, 131, 175, 175, 196, 196];
 
     function ensure() {
       if (!AudioCtx) return null;
@@ -126,10 +139,32 @@
       src.stop(t0 + dur + 0.02);
     }
 
+    function playMusicStep() {
+      if (muted || !musicOn) return;
+      var i = musicStep % MELODY.length;
+      tone(MELODY[i], 0.16, { type: 'triangle', gain: 0.055 });
+      tone(BASS[i], 0.2, { type: 'sine', gain: 0.05 });
+      musicStep++;
+    }
+
     return {
       unlock: ensure,
       isMuted: function () { return muted; },
       setMuted: function (v) { muted = v; localStorage.setItem(MUTE_KEY, v ? '1' : '0'); },
+      isMusicOn: function () { return musicOn; },
+      setMusicOn: function (v) {
+        musicOn = v;
+        localStorage.setItem(MUSIC_KEY, v ? '1' : '0');
+        if (v) this.startMusic(); else this.stopMusic();
+      },
+      startMusic: function () {
+        if (musicTimer || !musicOn) return;
+        musicStep = 0;
+        musicTimer = setInterval(playMusicStep, 230);
+      },
+      stopMusic: function () {
+        if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
+      },
       roll: function () {
         for (var i = 0; i < 4; i++) tone(300 + randInt(-40, 40), 0.05, { type: 'square', gain: 0.07, delay: i * 0.07 });
       },
@@ -183,12 +218,82 @@
   })();
 
   function updateMuteBtn() { muteBtn.textContent = Sound.isMuted() ? '🔇' : '🔊'; }
+  function updateMusicBtn() { musicBtn.textContent = Sound.isMusicOn() ? '🎵' : '🔕'; }
   updateMuteBtn();
+  updateMusicBtn();
   muteBtn.addEventListener('click', function () {
     Sound.setMuted(!Sound.isMuted());
     updateMuteBtn();
     Sound.unlock();
   });
+  musicBtn.addEventListener('click', function () {
+    Sound.unlock();
+    Sound.setMusicOn(!Sound.isMusicOn());
+    updateMusicBtn();
+  });
+
+  function getLeaderboard() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveScoreToLeaderboard(score) {
+    var board_ = getLeaderboard();
+    board_.push(score);
+    board_.sort(function (a, b) { return b - a; });
+    board_ = board_.slice(0, LEADERBOARD_SIZE);
+    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(board_));
+    return board_;
+  }
+
+  function renderLeaderboard(list, highlightScore) {
+    leaderboardList.innerHTML = '';
+    var highlighted = false;
+    for (var i = 0; i < list.length; i++) {
+      var li = document.createElement('li');
+      var isCurrent = !highlighted && list[i] === highlightScore;
+      if (isCurrent) { li.classList.add('current'); highlighted = true; }
+      li.innerHTML = '<span class="rank">#' + (i + 1) + '</span><span>' + list[i] + '</span>';
+      leaderboardList.appendChild(li);
+    }
+  }
+
+  function openOverlay(el) { el.classList.remove('hidden'); }
+  function closeOverlay(el) { el.classList.add('hidden'); }
+
+  helpBtn.addEventListener('click', function () { openOverlay(introOverlay); });
+  introCloseBtn.addEventListener('click', function () {
+    closeOverlay(introOverlay);
+    localStorage.setItem(INTRO_SEEN_KEY, '1');
+  });
+
+  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay'];
+  dismissableOverlayIds.forEach(function (id) {
+    var el = document.getElementById(id);
+    el.addEventListener('click', function (e) {
+      if (e.target === el) closeOverlay(el);
+    });
+  });
+  document.querySelectorAll('.modal-close').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      closeOverlay(document.getElementById(btn.dataset.close));
+    });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    dismissableOverlayIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el.classList.contains('hidden')) closeOverlay(el);
+    });
+  });
+
+  document.getElementById('supportBtn').addEventListener('click', function () { openOverlay(document.getElementById('supportOverlay')); });
+  document.getElementById('privacyBtn').addEventListener('click', function () { openOverlay(document.getElementById('privacyOverlay')); });
+  document.getElementById('faqBtn').addEventListener('click', function () { openOverlay(document.getElementById('faqOverlay')); });
 
   function pathIndexForCell(row, col) {
     if (row % 2 === 0) return row * COLS + col;
@@ -367,7 +472,8 @@
     wipesEl.textContent = state.wipes;
     streakEl.textContent = state.streak;
     streakHud.classList.toggle('streak-hot', state.streak >= 2);
-    var best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+    var leaderboard = getLeaderboard();
+    var best = leaderboard.length ? leaderboard[0] : 0;
     bestEl.textContent = Math.max(best, state.score);
 
     var nearest = Infinity;
@@ -549,9 +655,11 @@
     if (state.playerIndex >= FINISH) {
       state.playerIndex = FINISH;
       state.score += 100;
-      var best = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
-      var isNew = state.score > best;
-      if (isNew) localStorage.setItem(BEST_KEY, String(state.score));
+      var prevBoard = getLeaderboard();
+      var prevBest = prevBoard.length ? prevBoard[0] : 0;
+      var isNew = state.score > prevBest;
+      var newBoard = saveScoreToLeaderboard(state.score);
+      renderLeaderboard(newBoard, state.score);
       finalScoreEl.textContent = state.score;
       newBestText.classList.toggle('hidden', !isNew);
       updateHud();
@@ -569,6 +677,7 @@
     state.busy = true;
     rollBtn.disabled = true;
     Sound.unlock();
+    Sound.startMusic();
 
     rollBtn.classList.add('rolling');
     Sound.roll();
@@ -677,4 +786,8 @@
 
   buildBoard();
   resetGame();
+
+  if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
+    openOverlay(introOverlay);
+  }
 })();
