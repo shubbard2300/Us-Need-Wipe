@@ -20,6 +20,46 @@ body{
 .sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
 .sky .landscape{width:100%;height:100%;display:block;}
 
+.landscape .birds-group{animation:birds-glide 9s ease-in-out infinite alternate;}
+.landscape .bird{animation:bird-flap 0.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
+.landscape .bird-1{animation-delay:0s;}
+.landscape .bird-2{animation-delay:.15s;}
+.landscape .bird-3{animation-delay:.3s;}
+@keyframes birds-glide{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(46px,-16px);}
+}
+@keyframes bird-flap{
+  0%,100%{transform:translateY(0) scaleY(1);}
+  50%{transform:translateY(-6px) scaleY(0.65);}
+}
+
+.landscape .cloud-drift{animation:cloud-drift 16s ease-in-out infinite alternate;}
+.landscape .cloud-a{animation-duration:18s;}
+.landscape .cloud-b{animation-duration:22s;animation-direction:alternate-reverse;}
+.landscape .cloud-c{animation-duration:13s;}
+@keyframes cloud-drift{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(60px);}
+}
+
+.landscape .grass-blades path{animation:grass-sway 2.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
+.landscape .grass-blades path:nth-child(3n){animation-delay:0s;}
+.landscape .grass-blades path:nth-child(3n+1){animation-delay:.3s;}
+.landscape .grass-blades path:nth-child(3n+2){animation-delay:.6s;}
+@keyframes grass-sway{
+  0%,100%{transform:skewX(0deg);}
+  50%{transform:skewX(6deg);}
+}
+
+.landscape .flag{transform-box:fill-box;transform-origin:0% 50%;animation:flag-wave 1.4s ease-in-out infinite;}
+.landscape .flag-a{animation-delay:.2s;}
+.landscape .flag-b{animation-delay:.4s;}
+@keyframes flag-wave{
+  0%,100%{transform:skewY(0deg) scaleX(1);}
+  50%{transform:skewY(-10deg) scaleX(0.92);}
+}
+
 .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px 16px 60px;}
 
 .game-header{text-align:center;margin-bottom:10px;}

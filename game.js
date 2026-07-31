@@ -83,6 +83,40 @@
       osc.stop(t0 + dur + 0.03);
     }
 
+    var noiseBufferCache = {};
+    function getNoiseBuffer(c, dur) {
+      var key = dur.toFixed(3);
+      if (noiseBufferCache[key]) return noiseBufferCache[key];
+      var size = Math.max(1, Math.floor(c.sampleRate * dur));
+      var buffer = c.createBuffer(1, size, c.sampleRate);
+      var data = buffer.getChannelData(0);
+      for (var i = 0; i < size; i++) data[i] = Math.random() * 2 - 1;
+      noiseBufferCache[key] = buffer;
+      return buffer;
+    }
+
+    function noiseBurst(dur, opts) {
+      if (muted) return;
+      var c = ensure();
+      if (!c) return;
+      opts = opts || {};
+      var t0 = c.currentTime + (opts.delay || 0);
+      var src = c.createBufferSource();
+      src.buffer = getNoiseBuffer(c, dur);
+      var filter = c.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(opts.freq || 700, t0);
+      if (opts.freqTo) filter.frequency.exponentialRampToValueAtTime(Math.max(20, opts.freqTo), t0 + dur);
+      var gain = c.createGain();
+      var peak = opts.gain != null ? opts.gain : 0.2;
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(filter).connect(gain).connect(c.destination);
+      src.start(t0);
+      src.stop(t0 + dur + 0.02);
+    }
+
     return {
       unlock: ensure,
       isMuted: function () { return muted; },
@@ -98,7 +132,13 @@
         tone(784, 0.18, { type: 'triangle', gain: 0.16, delay: 0.18 });
       },
       wipeFail: function () {
-        tone(180, 0.35, { type: 'sawtooth', slideTo: 70, gain: 0.16 });
+        noiseBurst(0.16, { freq: 500, freqTo: 100, gain: 0.16 });
+        tone(180, 0.35, { type: 'sawtooth', slideTo: 70, gain: 0.16, delay: 0.05 });
+      },
+      plop: function () {
+        noiseBurst(0.16, { freq: 900, freqTo: 150, gain: 0.22 });
+        tone(220, 0.14, { type: 'sine', slideTo: 70, gain: 0.16, delay: 0.03 });
+        tone(110, 0.18, { type: 'sine', slideTo: 45, gain: 0.12, delay: 0.06 });
       },
       catchSfx: function () {
         tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.2 });
@@ -453,6 +493,7 @@
 
     var landedIndex = state.playerIndex;
     if (state.poopTiles.has(landedIndex) && !state.wipedTiles.has(landedIndex)) {
+      Sound.plop();
       var success = await startWipeQTE();
       if (success) {
         state.wipedTiles.add(landedIndex);
