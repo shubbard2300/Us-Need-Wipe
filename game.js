@@ -635,6 +635,21 @@
     }
   }
 
+  function spawnCleanPop(tileEl) {
+    var boardRect = board.getBoundingClientRect();
+    var r = tileEl.getBoundingClientRect();
+    var cx = r.left - boardRect.left + r.width / 2;
+    var cy = r.top - boardRect.top + r.height / 2;
+    var img = document.createElement('img');
+    img.className = 'clean-pop';
+    img.src = 'wipe-clean.png';
+    img.alt = '';
+    img.style.left = cx + 'px';
+    img.style.top = cy + 'px';
+    board.appendChild(img);
+    img.addEventListener('animationend', function () { this.remove(); });
+  }
+
   function spawnConfetti(container) {
     var colors = ['#ff6b6b', '#ffd23f', '#4fd44f', '#3ab0ff', '#c77dff'];
     for (var i = 0; i < 28; i++) {
@@ -961,6 +976,7 @@
         tileEls[landedIndex].classList.add('wiped');
         Sound.wipeSuccess();
         spawnSparkles(tileEls[landedIndex]);
+        spawnCleanPop(tileEls[landedIndex]);
         spawnFloatingScore(tileEls[landedIndex], '+' + gained, 'good');
         if (state.streak >= 2) {
           Sound.streakBonus();

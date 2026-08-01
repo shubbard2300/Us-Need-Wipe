@@ -381,6 +381,22 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   100%{transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1);opacity:0;}
 }
 
+.clean-pop{
+  position:absolute;
+  width:92px;
+  pointer-events:none;
+  z-index:9;
+  filter:drop-shadow(2px 4px 5px rgba(0,0,0,.35));
+  animation:clean-pop-anim 1.15s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes clean-pop-anim{
+  0%{transform:translate(-50%,-60%) scale(0) rotate(-10deg);opacity:0;}
+  18%{transform:translate(-50%,-98%) scale(1.15) rotate(5deg);opacity:1;}
+  30%{transform:translate(-50%,-92%) scale(1) rotate(0deg);opacity:1;}
+  78%{transform:translate(-50%,-92%) scale(1) rotate(0deg);opacity:1;}
+  100%{transform:translate(-50%,-70%) scale(0.7) rotate(4deg);opacity:0;}
+}
+
 .overlay{
   position:fixed;inset:0;
   background:rgba(20,20,30,.55);
