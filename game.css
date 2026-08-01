@@ -453,6 +453,32 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 }
 .leaderboard li.current{background:#ffe6a1;}
 .leaderboard li .rank{color:#8a7a4f;font-weight:600;}
+.leaderboard-heading{margin:14px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#6b6b60;}
+
+.auth-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.auth-tab{
+  flex:1;
+  background:#f6f2e2;
+  border:2px solid var(--ink);
+  border-radius:10px;
+  padding:8px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .15s ease, transform .15s ease;
+}
+.auth-tab.active{background:#ffd23f;}
+.auth-tab:hover{transform:translateY(-2px);}
+.auth-form{display:flex;flex-direction:column;gap:10px;}
+.auth-form label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:13px;color:#3a3a55;}
+.auth-form input{
+  font-family:inherit;
+  font-size:15px;
+  padding:9px 10px;
+  border:2px solid var(--ink);
+  border-radius:8px;
+}
+.auth-error{color:#c62828;font-weight:700;font-size:13px;margin:0;}
+#authSignedIn .btn-roll{width:100%;margin-bottom:8px;}
 
 .confetti{
   position:absolute;

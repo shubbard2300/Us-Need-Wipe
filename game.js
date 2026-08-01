@@ -38,6 +38,29 @@
   var introCloseBtn = document.getElementById('introCloseBtn');
   var boardShell = document.querySelector('.board-shell');
   var leaderboardList = document.getElementById('leaderboardList');
+  var globalLeaderboardList = document.getElementById('globalLeaderboardList');
+  var signInPrompt = document.getElementById('signInPrompt');
+
+  var authBtn = document.getElementById('authBtn');
+  var authOverlay = document.getElementById('authOverlay');
+  var authSignedOut = document.getElementById('authSignedOut');
+  var authSignedIn = document.getElementById('authSignedIn');
+  var authForm = document.getElementById('authForm');
+  var authUsername = document.getElementById('authUsername');
+  var authPassword = document.getElementById('authPassword');
+  var authError = document.getElementById('authError');
+  var authSubmitBtn = document.getElementById('authSubmitBtn');
+  var authStatusName = document.getElementById('authStatusName');
+  var authLogoutBtn = document.getElementById('authLogoutBtn');
+  var authDeleteBtn = document.getElementById('authDeleteBtn');
+  var authTabs = document.querySelectorAll('.auth-tab');
+  var authMode = 'signin';
+
+  var leaderboardBtn = document.getElementById('leaderboardBtn');
+  var globalBoardOverlay = document.getElementById('globalBoardOverlay');
+  var globalBoardList = document.getElementById('globalBoardList');
+
+  var currentUser = null;
 
   var wipeOverlay = document.getElementById('wipeOverlay');
   var wipeCard = document.getElementById('wipeCard');
@@ -290,7 +313,7 @@
     localStorage.setItem(INTRO_SEEN_KEY, '1');
   });
 
-  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay'];
+  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay', 'authOverlay', 'globalBoardOverlay'];
   dismissableOverlayIds.forEach(function (id) {
     var el = document.getElementById(id);
     el.addEventListener('click', function (e) {
@@ -313,6 +336,129 @@
   document.getElementById('supportBtn').addEventListener('click', function () { openOverlay(document.getElementById('supportOverlay')); });
   document.getElementById('privacyBtn').addEventListener('click', function () { openOverlay(document.getElementById('privacyOverlay')); });
   document.getElementById('faqBtn').addEventListener('click', function () { openOverlay(document.getElementById('faqOverlay')); });
+
+  // ---------- Accounts & global leaderboard ----------
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function updateAuthUI() {
+    authSignedOut.classList.toggle('hidden', !!currentUser);
+    authSignedIn.classList.toggle('hidden', !currentUser);
+    authStatusName.textContent = currentUser || '';
+    authBtn.title = currentUser ? ('Signed in as ' + currentUser) : 'Sign in / Sign up';
+  }
+
+  async function fetchMe() {
+    try {
+      var res = await fetch('/api/auth/me');
+      var data = await res.json();
+      currentUser = data.username || null;
+    } catch (e) {
+      currentUser = null;
+    }
+    updateAuthUI();
+  }
+
+  function setAuthMode(mode) {
+    authMode = mode;
+    authTabs.forEach(function (tab) {
+      tab.classList.toggle('active', tab.dataset.mode === mode);
+    });
+    authSubmitBtn.textContent = mode === 'signup' ? 'Sign Up' : 'Sign In';
+    authPassword.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
+    authError.classList.add('hidden');
+  }
+
+  authTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { setAuthMode(tab.dataset.mode); });
+  });
+
+  authBtn.addEventListener('click', function () {
+    authError.classList.add('hidden');
+    if (!currentUser) setAuthMode('signin');
+    openOverlay(authOverlay);
+  });
+
+  authForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    authError.classList.add('hidden');
+    var username = authUsername.value.trim();
+    var password = authPassword.value;
+    var endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/login';
+    authSubmitBtn.disabled = true;
+    try {
+      var res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username, password: password })
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        authError.textContent = data.error || 'Something went wrong.';
+        authError.classList.remove('hidden');
+        return;
+      }
+      currentUser = data.username;
+      authForm.reset();
+      updateAuthUI();
+      closeOverlay(authOverlay);
+      showToast('👋 Signed in as ' + currentUser, 'good');
+    } catch (err) {
+      authError.textContent = 'Network error — try again.';
+      authError.classList.remove('hidden');
+    } finally {
+      authSubmitBtn.disabled = false;
+    }
+  });
+
+  authLogoutBtn.addEventListener('click', async function () {
+    try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (e) { /* ignore */ }
+    currentUser = null;
+    updateAuthUI();
+    closeOverlay(authOverlay);
+    showToast('Signed out', 'good');
+  });
+
+  authDeleteBtn.addEventListener('click', async function () {
+    if (!window.confirm('Delete your account and all your global leaderboard scores? This can\'t be undone.')) return;
+    try {
+      await fetch('/api/auth/delete', { method: 'POST' });
+    } catch (e) { /* ignore */ }
+    currentUser = null;
+    updateAuthUI();
+    closeOverlay(authOverlay);
+    showToast('Account deleted', 'good');
+  });
+
+  async function fetchGlobalLeaderboard(targetEl) {
+    targetEl.innerHTML = '<li>Loading…</li>';
+    try {
+      var res = await fetch('/api/leaderboard');
+      var data = await res.json();
+      var list = data.leaderboard || [];
+      if (!list.length) {
+        targetEl.innerHTML = '<li>No scores yet — be the first!</li>';
+        return;
+      }
+      targetEl.innerHTML = '';
+      list.forEach(function (entry, i) {
+        var li = document.createElement('li');
+        if (currentUser && entry.username === currentUser) li.classList.add('current');
+        li.innerHTML = '<span class="rank">#' + (i + 1) + '</span><span>' + escapeHtml(entry.username) + ' — ' + entry.score + '</span>';
+        targetEl.appendChild(li);
+      });
+    } catch (e) {
+      targetEl.innerHTML = '<li>Could not load leaderboard.</li>';
+    }
+  }
+
+  leaderboardBtn.addEventListener('click', function () {
+    openOverlay(globalBoardOverlay);
+    fetchGlobalLeaderboard(globalBoardList);
+  });
 
   function pathIndexForCell(row, col) {
     if (row % 2 === 0) return row * COLS + col;
@@ -723,9 +869,26 @@
       Sound.win();
       spawnConfetti(winCard);
       state.gameOver = true;
+      submitAndShowGlobalLeaderboard(state.score, state.wipes);
       return true;
     }
     return false;
+  }
+
+  function submitAndShowGlobalLeaderboard(score, wipes) {
+    if (currentUser) {
+      signInPrompt.classList.add('hidden');
+      fetch('/api/scores', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ score: score, wipes: wipes })
+      }).catch(function () { /* ignore */ }).then(function () {
+        fetchGlobalLeaderboard(globalLeaderboardList);
+      });
+    } else {
+      signInPrompt.classList.remove('hidden');
+      fetchGlobalLeaderboard(globalLeaderboardList);
+    }
   }
 
   async function handleRoll() {
@@ -857,6 +1020,7 @@
 
   buildBoard();
   resetGame();
+  fetchMe();
 
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
     openOverlay(introOverlay);

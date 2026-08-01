@@ -281,6 +281,8 @@
     <button type="button" id="muteBtn" class="mute-btn" aria-label="Toggle sound">🔊</button>
     <button type="button" id="musicBtn" class="mute-btn" aria-label="Toggle music">🎵</button>
     <button type="button" id="helpBtn" class="mute-btn" aria-label="How to play">❓</button>
+    <button type="button" id="leaderboardBtn" class="mute-btn" aria-label="Global leaderboard">🏆</button>
+    <button type="button" id="authBtn" class="mute-btn" aria-label="Account">👤</button>
     <div class="hud-item"><span class="hud-label">Score</span><span id="score">0</span></div>
     <div class="hud-item"><span class="hud-label">Best</span><span id="best">0</span></div>
     <div class="hud-item"><span class="hud-label">Wipes</span><span id="wipes">0</span></div>
@@ -342,14 +344,10 @@
   <div class="wipe-card info-card">
     <button type="button" class="modal-close" data-close="privacyOverlay" aria-label="Close">✕</button>
     <h2>🔒 Privacy Policy</h2>
-    <p>This game doesn't send your data anywhere. There's no account, no server, no analytics, and no tracking.</p>
-    <p>The only data stored is in your browser's local storage, on your own device:</p>
-    <ul class="how-to-list">
-      <li>Your high score and top-5 leaderboard</li>
-      <li>Whether you've seen the "How to Play" intro</li>
-      <li>Your sound and music on/off preferences</li>
-    </ul>
-    <p>Clearing your browser data or local storage removes all of it. Nothing is ever uploaded or shared.</p>
+    <p>You can play as a guest with nothing stored beyond your own device, or create an account to appear on the global leaderboard. Here's exactly what each involves.</p>
+    <p><strong>Playing as a guest (no account):</strong> everything stays in your browser's local storage, on your own device — your best score and top-5 local runs, whether you've seen the "How to Play" intro, and your sound/music preferences. Nothing is sent anywhere. Clearing your browser data removes all of it.</p>
+    <p><strong>If you create an account:</strong> we store your username, a securely hashed password (never the password itself, never in plain text), and the scores you submit, in a database, solely to power the global leaderboard. No email address is required or collected.</p>
+    <p>There's no analytics, no third-party tracking, and nothing is sold or shared. You can delete your account and all associated scores at any time from the account menu.</p>
   </div>
 </div>
 
@@ -359,10 +357,53 @@
     <button type="button" class="modal-close" data-close="faqOverlay" aria-label="Close">✕</button>
     <h2>❓ FAQ</h2>
     <p><strong>How do I play?</strong><br>Roll the die to move toward the castle. Land on 💩 and mash <kbd>W</kbd> or tap WIPE before the timer runs out. Watch out for the angry bushes chasing you.</p>
-    <p><strong>Is my score saved?</strong><br>Yes — your best score and top 5 runs are saved locally in your browser, no account needed.</p>
+    <p><strong>Is my score saved?</strong><br>Your best score and top 5 runs are always saved locally in your browser, no account needed. Sign in (👤) to also submit scores to the global leaderboard (🏆).</p>
+    <p><strong>Do I need an account?</strong><br>No — guest play works fully offline-local. An account is only needed to appear on the shared global leaderboard.</p>
     <p><strong>Can I turn off the sound or music?</strong><br>Yes, use the 🔊 and 🎵 buttons above the board. Your preference is remembered.</p>
     <p><strong>What do the ⚡ tiles do?</strong><br>They grant a one-time shield that blocks the next bush catch.</p>
     <p><strong>Does it work on mobile?</strong><br>Yes, tap to roll and tap WIPE — no keyboard required.</p>
+  </div>
+</div>
+
+<!-- Sign in / Sign up -->
+<div id="authOverlay" class="overlay hidden">
+  <div class="wipe-card info-card" id="authCard">
+    <button type="button" class="modal-close" data-close="authOverlay" aria-label="Close">✕</button>
+    <h2 id="authTitle">👤 Account</h2>
+
+    <div id="authSignedOut">
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-mode="signin">Sign In</button>
+        <button type="button" class="auth-tab" data-mode="signup">Sign Up</button>
+      </div>
+      <form id="authForm" class="auth-form">
+        <label>Username
+          <input type="text" id="authUsername" autocomplete="username" maxlength="20" required>
+        </label>
+        <label>Password
+          <input type="password" id="authPassword" autocomplete="current-password" maxlength="200" required>
+        </label>
+        <p id="authError" class="auth-error hidden"></p>
+        <button type="submit" class="btn btn-roll" id="authSubmitBtn">Sign In</button>
+      </form>
+      <p class="hint">Playing as guest — scores only save locally until you sign in.</p>
+    </div>
+
+    <div id="authSignedIn" class="hidden">
+      <p>Signed in as <strong id="authStatusName"></strong>.</p>
+      <p class="hint">Your scores now save to the global leaderboard (🏆) too.</p>
+      <button type="button" id="authLogoutBtn" class="btn btn-roll">Log Out</button>
+      <p class="hint"><button type="button" id="authDeleteBtn" class="footer-link">Delete my account</button></p>
+    </div>
+  </div>
+</div>
+
+<!-- Global leaderboard -->
+<div id="globalBoardOverlay" class="overlay hidden">
+  <div class="wipe-card info-card">
+    <button type="button" class="modal-close" data-close="globalBoardOverlay" aria-label="Close">✕</button>
+    <h2>🏆 Global Leaderboard</h2>
+    <ol id="globalBoardList" class="leaderboard"></ol>
   </div>
 </div>
 
@@ -397,7 +438,11 @@
     <h2>🏰 You made it — and stayed clean!</h2>
     <p>Final score: <strong id="finalScore">0</strong></p>
     <p id="newBestText" class="new-best hidden">New best score!</p>
+    <h3 class="leaderboard-heading">Your Best Runs (this device)</h3>
     <ol id="leaderboardList" class="leaderboard"></ol>
+    <h3 class="leaderboard-heading">🏆 Global Leaderboard</h3>
+    <ol id="globalLeaderboardList" class="leaderboard"></ol>
+    <p id="signInPrompt" class="hint hidden">Sign in to save your score to the global leaderboard!</p>
     <button type="button" id="playAgainBtn" class="btn btn-roll">Play Again</button>
   </div>
 </div>
