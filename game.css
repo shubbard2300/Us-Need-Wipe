@@ -116,12 +116,9 @@ body{
 .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px 16px 60px;}
 
 .game-header{text-align:center;margin-bottom:10px;}
-.game-header h1{
-  font-size:clamp(28px,6vw,44px);
-  margin:0 0 4px;
-  color:#2b6b2b;
-  text-shadow:2px 2px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
-}
+.game-header h1{margin:0 0 4px;}
+.site-logo{width:min(420px,90%);height:auto;display:block;margin:0 auto;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));transition:transform .25s ease;}
+.site-logo:hover{transform:scale(1.04) rotate(-1deg);}
 .game-header .tag{margin:0;color:#3a3a55;font-weight:600;text-shadow:1px 1px 0 rgba(255,255,255,.6);}
 
 .hud{
