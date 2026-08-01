@@ -515,7 +515,8 @@
     for (var i = 0; i < 3; i++) {
       var b = document.createElement('div');
       b.className = 'token bush';
-      b.innerHTML = '<svg viewBox="0 0 100 100"><use href="#sprite-bush"/></svg>';
+      var bushSprite = i === 2 ? 'sprite-bush-2' : 'sprite-bush';
+      b.innerHTML = '<svg viewBox="0 0 100 100"><use href="#' + bushSprite + '"/></svg>';
       board.appendChild(b);
       bushTokens.push(b);
     }
