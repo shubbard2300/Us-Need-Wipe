@@ -66,6 +66,14 @@ body{
   50%{opacity:1;transform:scale(1.3);}
 }
 
+/* Sun/moon arc across the sky over the day, driven by JS from the visitor's local time.
+   Position (cx/cy, transform) lives on the inner elements; visibility (opacity) lives on
+   the wrapping <g> so it doesn't fight with sun-glow's own pulse keyframe animation. */
+#sunGlow,#moonGlow{transition:cx 3s linear, cy 3s linear;}
+#moonBody{transition:transform 3s linear;}
+#sunWrap,#moonWrap{transition:opacity 2s ease;}
+#starsGroup{transition:opacity 2.5s ease;}
+
 .landscape .birds-group-2{animation-duration:12s;animation-direction:alternate-reverse;}
 
 .landscape .tree-sway{animation:tree-sway 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}

@@ -128,9 +128,9 @@
   <svg class="landscape" viewBox="0 0 1800 1200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#8f8fe0"/>
-        <stop offset="55%" stop-color="#b6b5ee"/>
-        <stop offset="100%" stop-color="#dcd9f8"/>
+        <stop id="skyStop1" offset="0%" stop-color="#8f8fe0"/>
+        <stop id="skyStop2" offset="55%" stop-color="#b6b5ee"/>
+        <stop id="skyStop3" offset="100%" stop-color="#dcd9f8"/>
       </linearGradient>
       <linearGradient id="castleStone" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#eaf3e5"/>
@@ -140,11 +140,45 @@
         <stop offset="0%" stop-color="#fff9d6" stop-opacity="0.9"/>
         <stop offset="100%" stop-color="#fff9d6" stop-opacity="0"/>
       </radialGradient>
+      <radialGradient id="moonGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#eef4ff" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#eef4ff" stop-opacity="0"/>
+      </radialGradient>
     </defs>
 
     <rect x="0" y="0" width="1800" height="1200" fill="url(#skyGrad)"/>
 
-    <circle class="sun-glow" cx="260" cy="200" r="140" fill="url(#sunGrad)"/>
+    <g id="starsGroup" opacity="0">
+      <circle cx="120" cy="120" r="4" fill="#fff"/>
+      <circle cx="260" cy="90" r="3" fill="#fff"/>
+      <circle cx="420" cy="160" r="3.5" fill="#fff"/>
+      <circle cx="560" cy="80" r="2.5" fill="#fff"/>
+      <circle cx="700" cy="140" r="3" fill="#fff"/>
+      <circle cx="900" cy="70" r="4" fill="#fff"/>
+      <circle cx="1050" cy="150" r="2.5" fill="#fff"/>
+      <circle cx="1200" cy="90" r="3.5" fill="#fff"/>
+      <circle cx="1380" cy="130" r="3" fill="#fff"/>
+      <circle cx="1550" cy="80" r="3" fill="#fff"/>
+      <circle cx="1700" cy="150" r="2.5" fill="#fff"/>
+      <circle cx="350" cy="240" r="2.5" fill="#fff"/>
+      <circle cx="650" cy="260" r="2" fill="#fff"/>
+      <circle cx="980" cy="230" r="2.5" fill="#fff"/>
+      <circle cx="1300" cy="250" r="2" fill="#fff"/>
+    </g>
+
+    <g id="moonWrap" opacity="0">
+      <circle id="moonGlow" cx="260" cy="200" r="120" fill="url(#moonGrad)"/>
+      <g id="moonBody">
+        <circle cx="0" cy="0" r="46" fill="#f4f6ff" stroke="#c9d2ea" stroke-width="3"/>
+        <circle cx="-14" cy="-10" r="8" fill="#dbe1f5"/>
+        <circle cx="10" cy="8" r="6" fill="#dbe1f5"/>
+        <circle cx="6" cy="-16" r="4" fill="#dbe1f5"/>
+      </g>
+    </g>
+
+    <g id="sunWrap">
+      <circle id="sunGlow" class="sun-glow" cx="260" cy="200" r="140" fill="url(#sunGrad)"/>
+    </g>
 
     <g class="birds-group birds-group-2" stroke="#33324a" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5">
       <path class="bird bird-1" d="M1200 140 l10 -7 l10 7"/>

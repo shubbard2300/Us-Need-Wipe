@@ -98,10 +98,17 @@
     var musicOn = localStorage.getItem(MUSIC_KEY) !== '0';
     var musicTimer = null;
     var musicStep = 0;
-    var musicIntervalMs = 230;
+    var musicIntervalMs = 118; // ~128 BPM at 16th-note resolution — upbeat dance-pop tempo
     var intensity = 0;
-    var MELODY = [523, 659, 784, 659, 587, 784, 659, 523, 440, 523, 659, 523, 392, 523, 587, 659];
-    var BASS = [131, 131, 131, 131, 196, 196, 196, 196, 131, 131, 131, 131, 175, 175, 196, 196];
+
+    // K-pop-inspired dance-pop loop: bright syncopated hook (with rests, not a note every
+    // step) over a bouncing I-V-vi-IV bassline, plus a four-on-the-floor kick, backbeat
+    // snare/clap, and 8th-note hats. 16 steps = one bar of 4/4 at 16th-note resolution.
+    var MELODY = [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046];
+    var BASS = [131, 0, 262, 0, 196, 0, 392, 0, 110, 0, 220, 0, 175, 0, 350, 0];
+    var KICK_STEPS = [0, 4, 8, 12];
+    var SNARE_STEPS = [4, 12];
+    var HAT_STEPS = [1, 3, 5, 7, 9, 11, 13, 15];
 
     function ensure() {
       if (!AudioCtx) return null;
@@ -168,8 +175,23 @@
       if (muted || !musicOn) return;
       var i = musicStep % MELODY.length;
       var pitchUp = intensity >= 2 ? 1.12 : 1;
-      tone(MELODY[i] * pitchUp, 0.16, { type: 'triangle', gain: 0.055 + intensity * 0.01 });
-      tone(BASS[i] * pitchUp, 0.2, { type: 'sine', gain: 0.05 + intensity * 0.01 });
+
+      if (KICK_STEPS.indexOf(i) !== -1) {
+        tone(150, 0.12, { type: 'triangle', slideTo: 42, gain: 0.22 + intensity * 0.02 });
+      }
+      if (SNARE_STEPS.indexOf(i) !== -1) {
+        noiseBurst(0.09, { freq: 2600, freqTo: 700, gain: 0.16 + intensity * 0.02 });
+        tone(190, 0.06, { type: 'square', gain: 0.08 });
+      }
+      if (HAT_STEPS.indexOf(i) !== -1) {
+        noiseBurst(0.035, { freq: 7000, freqTo: 5000, gain: 0.05 });
+      }
+      if (MELODY[i]) {
+        tone(MELODY[i] * pitchUp, 0.1, { type: i % 4 === 2 ? 'square' : 'triangle', gain: 0.06 + intensity * 0.01 });
+      }
+      if (BASS[i]) {
+        tone(BASS[i] * pitchUp, 0.13, { type: 'sawtooth', gain: 0.06 + intensity * 0.01 });
+      }
       musicStep++;
     }
 
@@ -200,7 +222,7 @@
       setIntensity: function (level) {
         if (intensity === level) return;
         intensity = level;
-        musicIntervalMs = level >= 2 ? 165 : (level === 1 ? 195 : 230);
+        musicIntervalMs = level >= 2 ? 88 : (level === 1 ? 102 : 118);
         restartMusicTimer();
       },
       roll: function () {
@@ -1025,4 +1047,106 @@
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
     openOverlay(introOverlay);
   }
+
+  // ---------- Day/night sun & moon cycle, based on the visitor's local time ----------
+  (function () {
+    var sunWrap = document.getElementById('sunWrap');
+    var sunGlow = document.getElementById('sunGlow');
+    var moonWrap = document.getElementById('moonWrap');
+    var moonGlow = document.getElementById('moonGlow');
+    var moonBody = document.getElementById('moonBody');
+    var starsGroup = document.getElementById('starsGroup');
+    var skyStop1 = document.getElementById('skyStop1');
+    var skyStop2 = document.getElementById('skyStop2');
+    var skyStop3 = document.getElementById('skyStop3');
+    if (!sunWrap || !sunGlow || !moonWrap || !moonGlow || !moonBody || !starsGroup || !skyStop1 || !skyStop2 || !skyStop3) return;
+
+    var HORIZON_Y = 780;
+    var ZENITH_Y = 140;
+    var ARC_X_START = 150;
+    var ARC_X_END = 1650;
+
+    function arcPosition(progress) {
+      var clamped = Math.max(0, Math.min(1, progress));
+      return {
+        x: ARC_X_START + clamped * (ARC_X_END - ARC_X_START),
+        y: HORIZON_Y - Math.sin(clamped * Math.PI) * (HORIZON_Y - ZENITH_Y)
+      };
+    }
+
+    function hexToRgb(hex) {
+      var n = parseInt(hex.slice(1), 16);
+      return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+    }
+    function rgbToHex(rgb) {
+      return '#' + rgb.map(function (v) {
+        var h = Math.max(0, Math.min(255, Math.round(v))).toString(16);
+        return h.length < 2 ? '0' + h : h;
+      }).join('');
+    }
+    function lerpColor(c1, c2, t) {
+      var a = hexToRgb(c1), b = hexToRgb(c2);
+      return rgbToHex([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
+    }
+
+    // Keyframes across a 24h day for the sky gradient's top/mid/bottom stops:
+    // deep night -> pre-dawn -> warm sunrise -> daytime purple -> warm sunset -> night.
+    var SKY_KEYFRAMES = [
+      { h: 0, top: '#14143a', mid: '#1f1f55', bottom: '#2c2c6b' },
+      { h: 5, top: '#20204a', mid: '#2c2c6b', bottom: '#3d3d85' },
+      { h: 6.5, top: '#8f6fae', mid: '#e08a5b', bottom: '#ffd9a8' },
+      { h: 9, top: '#8f8fe0', mid: '#b6b5ee', bottom: '#dcd9f8' },
+      { h: 17, top: '#8f8fe0', mid: '#b6b5ee', bottom: '#dcd9f8' },
+      { h: 18.5, top: '#6a4fae', mid: '#e0705b', bottom: '#ffb27a' },
+      { h: 20, top: '#20204a', mid: '#2c2c6b', bottom: '#3d3d85' },
+      { h: 24, top: '#14143a', mid: '#1f1f55', bottom: '#2c2c6b' }
+    ];
+
+    function getSkyColors(hour) {
+      for (var i = 0; i < SKY_KEYFRAMES.length - 1; i++) {
+        var a = SKY_KEYFRAMES[i], b = SKY_KEYFRAMES[i + 1];
+        if (hour >= a.h && hour <= b.h) {
+          var t = (hour - a.h) / (b.h - a.h || 1);
+          return {
+            top: lerpColor(a.top, b.top, t),
+            mid: lerpColor(a.mid, b.mid, t),
+            bottom: lerpColor(a.bottom, b.bottom, t)
+          };
+        }
+      }
+      return SKY_KEYFRAMES[0];
+    }
+
+    function updateTimeOfDay() {
+      var now = new Date();
+      var hour = now.getHours() + now.getMinutes() / 60;
+
+      var sunProgress = (hour - 6) / 12; // 0 at 6am, 1 at 6pm
+      var moonProgress = ((hour + 12) % 24 - 6) / 12; // moon rises ~12h opposite the sun
+
+      var sunVisible = sunProgress >= 0 && sunProgress <= 1;
+      var moonVisible = moonProgress >= 0 && moonProgress <= 1;
+
+      var sunPos = arcPosition(sunProgress);
+      sunGlow.setAttribute('cx', sunPos.x);
+      sunGlow.setAttribute('cy', sunPos.y);
+      sunWrap.style.opacity = sunVisible ? '1' : '0';
+
+      var moonPos = arcPosition(moonProgress);
+      moonGlow.setAttribute('cx', moonPos.x);
+      moonGlow.setAttribute('cy', moonPos.y);
+      moonBody.setAttribute('transform', 'translate(' + moonPos.x + ',' + moonPos.y + ')');
+      moonWrap.style.opacity = moonVisible ? '1' : '0';
+
+      starsGroup.style.opacity = sunVisible ? '0' : '0.85';
+
+      var colors = getSkyColors(hour);
+      skyStop1.setAttribute('stop-color', colors.top);
+      skyStop2.setAttribute('stop-color', colors.mid);
+      skyStop3.setAttribute('stop-color', colors.bottom);
+    }
+
+    updateTimeOfDay();
+    setInterval(updateTimeOfDay, 60000);
+  })();
 })();
