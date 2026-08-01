@@ -8,11 +8,7 @@ const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 // automatically once a database is attached), so no extra env var setup is required.
 // It's server-side only and never sent to the client.
 function getSecret() {
-  const material =
-    process.env.POSTGRES_URL ||
-    process.env.DATABASE_URL ||
-    process.env.POSTGRES_URL_NON_POOLING ||
-    'us-need-wipe-fallback-secret';
+  const material = db.getConnectionString() || 'us-need-wipe-fallback-secret';
   return crypto.createHash('sha256').update(material).digest();
 }
 

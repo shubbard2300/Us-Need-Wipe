@@ -1,13 +1,34 @@
 const { Pool } = require('pg');
 
+// The Neon-via-Vercel integration can prefix its injected env vars with the
+// project name (e.g. "us_need_wipe_POSTGRES_URL") instead of using the plain
+// names, depending on how the connection was set up. Check every variant.
+const CONNECTION_STRING_KEYS = [
+  'POSTGRES_URL',
+  'DATABASE_URL',
+  'POSTGRES_URL_NON_POOLING',
+  'POSTGRES_PRISMA_URL',
+  'us_need_wipe_POSTGRES_URL',
+  'us_need_wipe_DATABASE_URL',
+  'us_need_wipe_POSTGRES_URL_NON_POOLING',
+  'us_need_wipe_POSTGRES_PRISMA_URL',
+  'usneedwipe_POSTGRES_URL',
+  'usneedwipe_DATABASE_URL',
+  'usneedwipe_PRISMA_DATABASE_URL'
+];
+
+function getConnectionString() {
+  for (let i = 0; i < CONNECTION_STRING_KEYS.length; i++) {
+    const value = process.env[CONNECTION_STRING_KEYS[i]];
+    if (value) return value;
+  }
+  return null;
+}
+
 let pool;
 function getPool() {
   if (!pool) {
-    const connectionString =
-      process.env.POSTGRES_URL ||
-      process.env.DATABASE_URL ||
-      process.env.POSTGRES_URL_NON_POOLING ||
-      process.env.POSTGRES_PRISMA_URL;
+    const connectionString = getConnectionString();
     if (!connectionString) {
       throw new Error('No Postgres connection string found in environment variables.');
     }
@@ -55,4 +76,4 @@ async function query(text, params) {
   return p.query(text, params);
 }
 
-module.exports = { query, ensureSchema, getPool };
+module.exports = { query, ensureSchema, getPool, getConnectionString };
