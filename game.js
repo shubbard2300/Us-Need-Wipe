@@ -73,6 +73,7 @@
 
   var winOverlay = document.getElementById('winOverlay');
   var winCard = document.getElementById('winCard');
+  var kingLogPopup = document.getElementById('kingLogPopup');
   var finalScoreEl = document.getElementById('finalScore');
   var newBestText = document.getElementById('newBestText');
   var playAgainBtn = document.getElementById('playAgainBtn');
@@ -277,6 +278,17 @@
       win: function () {
         var notes = [523, 659, 784, 1046];
         notes.forEach(function (n, i) { tone(n, 0.22, { type: 'triangle', gain: 0.16, delay: i * 0.14 }); });
+      },
+      kingCelebration: function () {
+        var fanfare = [392, 494, 587, 784, 988, 1176];
+        fanfare.forEach(function (n, i) {
+          tone(n, 0.16, { type: 'square', gain: 0.13, delay: i * 0.085 });
+          tone(n / 2, 0.16, { type: 'triangle', gain: 0.07, delay: i * 0.085 });
+        });
+        var tail = fanfare.length * 0.085;
+        tone(1568, 0.5, { type: 'triangle', gain: 0.2, delay: tail });
+        tone(1976, 0.5, { type: 'sine', gain: 0.12, delay: tail + 0.03 });
+        noiseBurst(0.6, { freq: 3200, freqTo: 900, gain: 0.09, delay: tail });
       }
     };
   })();
@@ -920,7 +932,11 @@
       updateHud();
       winOverlay.classList.remove('hidden');
       Sound.win();
+      Sound.kingCelebration();
       spawnConfetti(winCard);
+      kingLogPopup.classList.remove('show');
+      void kingLogPopup.offsetWidth;
+      kingLogPopup.classList.add('show');
       state.gameOver = true;
       submitAndShowGlobalLeaderboard(state.score, state.wipes);
       return true;
