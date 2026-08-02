@@ -266,6 +266,17 @@
         tone(120, 0.3, { type: 'sawtooth', slideTo: 40, gain: 0.2 });
         tone(90, 0.3, { type: 'sawtooth', slideTo: 35, gain: 0.18, delay: 0.12 });
       },
+      legionArrive: function () {
+        tone(440, 0.12, { type: 'square', gain: 0.14 });
+        tone(554, 0.12, { type: 'square', gain: 0.14, delay: 0.09 });
+        tone(659, 0.22, { type: 'square', gain: 0.16, delay: 0.18 });
+        noiseBurst(0.18, { freq: 1400, freqTo: 400, gain: 0.1, delay: 0.02 });
+      },
+      reaperSting: function () {
+        tone(220, 0.4, { type: 'sawtooth', slideTo: 55, gain: 0.16 });
+        tone(233, 0.4, { type: 'sawtooth', slideTo: 58, gain: 0.12, delay: 0.03 });
+        noiseBurst(0.3, { freq: 2000, freqTo: 300, gain: 0.09, delay: 0.05 });
+      },
       catchSfx: function () {
         noiseBurst(0.2, { freq: 1000, freqTo: 150, gain: 0.2 });
         tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.22 });
@@ -571,6 +582,7 @@
       busy: false,
       gameOver: false,
       thirdBushActive: false,
+      legionShown: false,
       poopTiles: poopTiles,
       wipedTiles: new Set(),
       turboTiles: pickTurboTiles(poopTiles),
@@ -670,6 +682,21 @@
     var img = document.createElement('img');
     img.className = 'clean-pop fail-pop';
     img.src = 'wipe-fail.png';
+    img.alt = '';
+    img.style.left = cx + 'px';
+    img.style.top = cy + 'px';
+    board.appendChild(img);
+    img.addEventListener('animationend', function () { this.remove(); });
+  }
+
+  function spawnLegionPop(anchorEl) {
+    var boardRect = board.getBoundingClientRect();
+    var r = anchorEl.getBoundingClientRect();
+    var cx = r.left - boardRect.left + r.width / 2;
+    var cy = r.top - boardRect.top + r.height / 2;
+    var img = document.createElement('img');
+    img.className = 'legion-pop';
+    img.src = 'legion.png';
     img.alt = '';
     img.style.left = cx + 'px';
     img.style.top = cy + 'px';
@@ -791,7 +818,10 @@
       wipeTimerFill.style.transition = 'width ' + WIPE_TIME_MS + 'ms linear';
       wipeTimerFill.style.width = '0%';
 
-      var urgentTimeout = setTimeout(function () { wipeCard.classList.add('urgent'); }, WIPE_TIME_MS * 0.55);
+      var urgentTimeout = setTimeout(function () {
+        wipeCard.classList.add('urgent');
+        Sound.reaperSting();
+      }, WIPE_TIME_MS * 0.55);
       var timeout = setTimeout(function () { finish(false); }, WIPE_TIME_MS);
 
       function onTap() {
@@ -867,7 +897,15 @@
           b.index = Math.min(b.index + step, state.playerIndex);
         }
       }
-      if (b.index >= 0) bushTokens[i].classList.add('active');
+      if (b.index >= 0) {
+        if (!state.legionShown && !bushTokens[i].classList.contains('active')) {
+          state.legionShown = true;
+          spawnLegionPop(playerToken);
+          Sound.legionArrive();
+          showToast('⚔️ Legion arrives to help you outrun the bushes!', 'good');
+        }
+        bushTokens[i].classList.add('active');
+      }
       positionToken(bushTokens[i], b.index, 0.8);
       await sleep(110);
     }

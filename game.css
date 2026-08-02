@@ -324,6 +324,22 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   100%{transform:translate(-50%,-70%) scale(0.7) rotate(-4deg);opacity:0;}
 }
 
+.legion-pop{
+  position:absolute;
+  width:110px;
+  pointer-events:none;
+  z-index:9;
+  filter:drop-shadow(2px 4px 6px rgba(0,0,0,.4));
+  animation:legion-arrive-anim 1.8s cubic-bezier(.3,1.1,.6,1) forwards;
+}
+@keyframes legion-arrive-anim{
+  0%{transform:translate(-170%,-70%) scale(0.75) rotate(-10deg);opacity:0;}
+  30%{transform:translate(-60%,-98%) scale(1.12) rotate(5deg);opacity:1;}
+  42%{transform:translate(-50%,-92%) scale(1) rotate(0deg);opacity:1;}
+  82%{transform:translate(-50%,-92%) scale(1) rotate(0deg);opacity:1;}
+  100%{transform:translate(-50%,-70%) scale(0.7) rotate(4deg);opacity:0;}
+}
+
 .overlay{
   position:fixed;inset:0;
   background:rgba(20,20,30,.55);
@@ -349,6 +365,27 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   0%,100%{transform:translateX(0);}
   25%{transform:translateX(-4px);}
   75%{transform:translateX(4px);}
+}
+
+.reaper-pop{
+  position:absolute;
+  left:-14px;
+  bottom:-6px;
+  width:86px;
+  opacity:0;
+  transform:translateX(-30px) rotate(-8deg) scale(0.85);
+  filter:drop-shadow(2px 4px 6px rgba(0,0,0,.4));
+  pointer-events:none;
+  transition:opacity .3s ease;
+}
+.wipe-card.urgent .reaper-pop{
+  opacity:1;
+  animation:reaper-lunge 1.4s ease-in-out infinite;
+}
+@keyframes reaper-lunge{
+  0%,100%{transform:translateX(-30px) rotate(-8deg) scale(0.85);}
+  40%{transform:translateX(0) rotate(2deg) scale(1);}
+  60%{transform:translateX(-6px) rotate(-3deg) scale(0.97);}
 }
 .wipe-emoji{font-size:56px;line-height:1;}
 .wipe-emoji.poop-king{position:relative;display:inline-block;animation:poop-king-bob .5s ease-in-out infinite;}
@@ -515,7 +552,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
     animation:none !important;
   }
   .board-shell.shake{animation:none !important;}
-  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent{animation-duration:.01s !important;}
+  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent,.wipe-card.urgent .reaper-pop{animation-duration:.01s !important;}
   .tile.poop:not(.wiped):hover::after,
   .tile.turbo:not(.used):hover::after,
   .tile.finish:hover .finish-castle,
