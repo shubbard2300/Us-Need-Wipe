@@ -650,6 +650,21 @@
     img.addEventListener('animationend', function () { this.remove(); });
   }
 
+  function spawnFailPop(tileEl) {
+    var boardRect = board.getBoundingClientRect();
+    var r = tileEl.getBoundingClientRect();
+    var cx = r.left - boardRect.left + r.width / 2;
+    var cy = r.top - boardRect.top + r.height / 2;
+    var img = document.createElement('img');
+    img.className = 'clean-pop fail-pop';
+    img.src = 'wipe-fail.png';
+    img.alt = '';
+    img.style.left = cx + 'px';
+    img.style.top = cy + 'px';
+    board.appendChild(img);
+    img.addEventListener('animationend', function () { this.remove(); });
+  }
+
   function spawnConfetti(container) {
     var colors = ['#ff6b6b', '#ffd23f', '#4fd44f', '#3ab0ff', '#c77dff'];
     for (var i = 0; i < 28; i++) {
@@ -989,6 +1004,7 @@
         state.playerIndex = Math.max(0, state.playerIndex - 3);
         state.streak = 0;
         Sound.wipeFail();
+        spawnFailPop(tileEls[landedIndex]);
         spawnFloatingScore(tileEls[landedIndex], '-15', 'bad');
         showToast(pick(WIPE_FAIL_MSGS) + ' -15, knocked back 3 tiles', 'bad');
         await stepBackAnimation();
