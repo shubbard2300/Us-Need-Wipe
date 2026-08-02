@@ -1097,102 +1097,53 @@
     openOverlay(introOverlay);
   }
 
-  // ---------- Day/night sun & moon cycle, based on the visitor's local time ----------
+  // ---------- Day/night tint over the painted background, based on the visitor's local time ----------
   (function () {
-    var sunWrap = document.getElementById('sunWrap');
-    var sunGlow = document.getElementById('sunGlow');
-    var moonWrap = document.getElementById('moonWrap');
-    var moonGlow = document.getElementById('moonGlow');
-    var moonBody = document.getElementById('moonBody');
-    var starsGroup = document.getElementById('starsGroup');
-    var skyStop1 = document.getElementById('skyStop1');
-    var skyStop2 = document.getElementById('skyStop2');
-    var skyStop3 = document.getElementById('skyStop3');
-    if (!sunWrap || !sunGlow || !moonWrap || !moonGlow || !moonBody || !starsGroup || !skyStop1 || !skyStop2 || !skyStop3) return;
-
-    var HORIZON_Y = 780;
-    var ZENITH_Y = 140;
-    var ARC_X_START = 150;
-    var ARC_X_END = 1650;
-
-    function arcPosition(progress) {
-      var clamped = Math.max(0, Math.min(1, progress));
-      return {
-        x: ARC_X_START + clamped * (ARC_X_END - ARC_X_START),
-        y: HORIZON_Y - Math.sin(clamped * Math.PI) * (HORIZON_Y - ZENITH_Y)
-      };
-    }
+    var tint = document.getElementById('dayNightTint');
+    if (!tint) return;
 
     function hexToRgb(hex) {
       var n = parseInt(hex.slice(1), 16);
       return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
     }
-    function rgbToHex(rgb) {
-      return '#' + rgb.map(function (v) {
-        var h = Math.max(0, Math.min(255, Math.round(v))).toString(16);
-        return h.length < 2 ? '0' + h : h;
-      }).join('');
-    }
-    function lerpColor(c1, c2, t) {
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function lerpRgb(c1, c2, t) {
       var a = hexToRgb(c1), b = hexToRgb(c2);
-      return rgbToHex([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]);
+      return [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
     }
 
-    // Keyframes across a 24h day for the sky gradient's top/mid/bottom stops:
-    // deep night -> pre-dawn -> warm sunrise -> daytime purple -> warm sunset -> night.
-    var SKY_KEYFRAMES = [
-      { h: 0, top: '#14143a', mid: '#1f1f55', bottom: '#2c2c6b' },
-      { h: 5, top: '#20204a', mid: '#2c2c6b', bottom: '#3d3d85' },
-      { h: 6.5, top: '#8f6fae', mid: '#e08a5b', bottom: '#ffd9a8' },
-      { h: 9, top: '#8f8fe0', mid: '#b6b5ee', bottom: '#dcd9f8' },
-      { h: 17, top: '#8f8fe0', mid: '#b6b5ee', bottom: '#dcd9f8' },
-      { h: 18.5, top: '#6a4fae', mid: '#e0705b', bottom: '#ffb27a' },
-      { h: 20, top: '#20204a', mid: '#2c2c6b', bottom: '#3d3d85' },
-      { h: 24, top: '#14143a', mid: '#1f1f55', bottom: '#2c2c6b' }
+    // Keyframes across a 24h day for the tint color/opacity washed over the artwork:
+    // dark navy at night, warm glow at sunrise/sunset, fully transparent at midday.
+    var TINT_KEYFRAMES = [
+      { h: 0, color: '#0a0a2a', opacity: 0.62 },
+      { h: 5, color: '#141438', opacity: 0.5 },
+      { h: 6.5, color: '#ff9d5c', opacity: 0.26 },
+      { h: 9, color: '#ffffff', opacity: 0 },
+      { h: 17, color: '#ffffff', opacity: 0 },
+      { h: 18.5, color: '#ff7e5c', opacity: 0.28 },
+      { h: 20, color: '#141438', opacity: 0.5 },
+      { h: 24, color: '#0a0a2a', opacity: 0.62 }
     ];
 
-    function getSkyColors(hour) {
-      for (var i = 0; i < SKY_KEYFRAMES.length - 1; i++) {
-        var a = SKY_KEYFRAMES[i], b = SKY_KEYFRAMES[i + 1];
+    function getTint(hour) {
+      for (var i = 0; i < TINT_KEYFRAMES.length - 1; i++) {
+        var a = TINT_KEYFRAMES[i], b = TINT_KEYFRAMES[i + 1];
         if (hour >= a.h && hour <= b.h) {
           var t = (hour - a.h) / (b.h - a.h || 1);
           return {
-            top: lerpColor(a.top, b.top, t),
-            mid: lerpColor(a.mid, b.mid, t),
-            bottom: lerpColor(a.bottom, b.bottom, t)
+            rgb: lerpRgb(a.color, b.color, t),
+            opacity: lerp(a.opacity, b.opacity, t)
           };
         }
       }
-      return SKY_KEYFRAMES[0];
+      return { rgb: hexToRgb(TINT_KEYFRAMES[0].color), opacity: TINT_KEYFRAMES[0].opacity };
     }
 
     function updateTimeOfDay() {
       var now = new Date();
       var hour = now.getHours() + now.getMinutes() / 60;
-
-      var sunProgress = (hour - 6) / 12; // 0 at 6am, 1 at 6pm
-      var moonProgress = ((hour + 12) % 24 - 6) / 12; // moon rises ~12h opposite the sun
-
-      var sunVisible = sunProgress >= 0 && sunProgress <= 1;
-      var moonVisible = moonProgress >= 0 && moonProgress <= 1;
-
-      var sunPos = arcPosition(sunProgress);
-      sunGlow.setAttribute('cx', sunPos.x);
-      sunGlow.setAttribute('cy', sunPos.y);
-      sunWrap.style.opacity = sunVisible ? '1' : '0';
-
-      var moonPos = arcPosition(moonProgress);
-      moonGlow.setAttribute('cx', moonPos.x);
-      moonGlow.setAttribute('cy', moonPos.y);
-      moonBody.setAttribute('transform', 'translate(' + moonPos.x + ',' + moonPos.y + ')');
-      moonWrap.style.opacity = moonVisible ? '1' : '0';
-
-      starsGroup.style.opacity = sunVisible ? '0' : '0.85';
-
-      var colors = getSkyColors(hour);
-      skyStop1.setAttribute('stop-color', colors.top);
-      skyStop2.setAttribute('stop-color', colors.mid);
-      skyStop3.setAttribute('stop-color', colors.bottom);
+      var tv = getTint(hour);
+      tint.style.backgroundColor = 'rgba(' + Math.round(tv.rgb[0]) + ',' + Math.round(tv.rgb[1]) + ',' + Math.round(tv.rgb[2]) + ',' + tv.opacity.toFixed(2) + ')';
     }
 
     updateTimeOfDay();

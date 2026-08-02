@@ -17,101 +17,21 @@ body{
   overflow-x:hidden;
   position:relative;
 }
-.sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.sky .landscape{width:100%;height:100%;display:block;}
-
-.landscape .birds-group{animation:birds-glide 7s ease-in-out infinite alternate;}
-.landscape .bird{animation:bird-flap 0.6s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
-.landscape .bird-1{animation-delay:0s;}
-.landscape .bird-2{animation-delay:.15s;}
-.landscape .bird-3{animation-delay:.3s;}
-@keyframes birds-glide{
-  0%{transform:translate(0,0);}
-  100%{transform:translate(160px,-55px);}
-}
-@keyframes bird-flap{
-  0%,100%{transform:translateY(0) scaleY(1);}
-  50%{transform:translateY(-8px) scaleY(0.6);}
+.sky{
+  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  background-image:url('background-scene.jpg');
+  background-size:cover;
+  background-position:center bottom;
 }
 
-.landscape .cloud-drift{animation:cloud-drift 13s ease-in-out infinite alternate;}
-.landscape .cloud-a{animation-duration:14s;}
-.landscape .cloud-b{animation-duration:17s;animation-direction:alternate-reverse;}
-.landscape .cloud-c{animation-duration:10s;}
-@keyframes cloud-drift{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(220px);}
+/* Time-of-day tint, driven by JS from the visitor's local time. A soft color wash
+   layered over the painted background — warm at sunrise/sunset, dark navy at night,
+   fully transparent at midday so the artwork shows through unfiltered. */
+.day-night-tint{
+  position:absolute;inset:0;
+  background-color:rgba(10,10,42,0);
+  transition:background-color 3s ease;
 }
-
-.landscape .grass-blades path{animation:grass-sway 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
-.landscape .grass-blades path:nth-child(3n){animation-delay:0s;}
-.landscape .grass-blades path:nth-child(3n+1){animation-delay:.3s;}
-.landscape .grass-blades path:nth-child(3n+2){animation-delay:.6s;}
-@keyframes grass-sway{
-  0%,100%{transform:skewX(0deg);}
-  50%{transform:skewX(15deg);}
-}
-
-.landscape .flag{transform-box:fill-box;transform-origin:0% 50%;animation:flag-wave 1s ease-in-out infinite;}
-.landscape .flag-a{animation-delay:.2s;}
-.landscape .flag-b{animation-delay:.4s;}
-@keyframes flag-wave{
-  0%,100%{transform:skewY(0deg) scaleX(1);}
-  50%{transform:skewY(-24deg) scaleX(0.82);}
-}
-
-.landscape .sun-glow{animation:sun-pulse 3.5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 50%;}
-@keyframes sun-pulse{
-  0%,100%{opacity:0.6;transform:scale(0.92);}
-  50%{opacity:1;transform:scale(1.3);}
-}
-
-/* Sun/moon arc across the sky over the day, driven by JS from the visitor's local time.
-   Position (cx/cy, transform) lives on the inner elements; visibility (opacity) lives on
-   the wrapping <g> so it doesn't fight with sun-glow's own pulse keyframe animation. */
-#sunGlow,#moonGlow{transition:cx 3s linear, cy 3s linear;}
-#moonBody{transition:transform 3s linear;}
-#sunWrap,#moonWrap{transition:opacity 2s ease;}
-#starsGroup{transition:opacity 2.5s ease;}
-
-.landscape .birds-group-2{animation-duration:12s;animation-direction:alternate-reverse;}
-
-.landscape .tree-sway{animation:tree-sway 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%;}
-.landscape .tree-sway-b{animation-delay:.5s;animation-duration:2s;}
-@keyframes tree-sway{
-  0%,100%{transform:skewX(0deg) rotate(0deg);}
-  50%{transform:skewX(-9deg) rotate(-3deg);}
-}
-
-.landscape .waterfall rect{animation:waterfall-flow 0.7s linear infinite;}
-.landscape .waterfall rect:nth-child(2){animation-delay:.2s;}
-.landscape .waterfall rect:nth-child(3){animation-delay:.4s;}
-@keyframes waterfall-flow{
-  0%{transform:translateY(-14px);opacity:.3;}
-  50%{opacity:.9;}
-  100%{transform:translateY(14px);opacity:.3;}
-}
-
-/* Background elements react on hover — re-enable pointer-events just for these shapes
-   so hovering them doesn't block clicks through the rest of the (pointer-events:none) scenery. */
-.landscape .cloud-drift,
-.landscape .bird,
-.landscape .tree-sway,
-.landscape .flag,
-.landscape .sun-glow,
-.landscape .castle-windows,
-.landscape .waterfall{
-  pointer-events:auto;
-  cursor:pointer;
-}
-.landscape .cloud-drift:hover{animation-duration:2.5s !important;}
-.landscape .bird:hover{animation-duration:0.2s !important;}
-.landscape .tree-sway:hover{animation-duration:0.5s !important;}
-.landscape .flag:hover{animation-duration:0.35s !important;}
-.landscape .sun-glow:hover{animation-duration:1.2s !important;}
-.landscape .waterfall:hover rect{animation-duration:0.35s !important;}
-.landscape .castle-windows{transition:filter .25s ease;}
-.landscape .castle-windows:hover{filter:drop-shadow(0 0 10px #ffd76b) brightness(1.6);}
 
 .wrap{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:20px 16px 60px;}
 
