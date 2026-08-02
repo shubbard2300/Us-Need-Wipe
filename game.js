@@ -11,6 +11,7 @@
   var POOP_COUNT = 16;
   var TURBO_COUNT = 3;
   var WAITER_DISTANCE = 8;
+  var FINISH_SPARKLE_DISTANCE = 6;
   var THIRD_BUSH_TILE = 26;
   var LEADERBOARD_KEY = 'usNeedWipeLeaderboard';
   var LEADERBOARD_SIZE = 5;
@@ -521,7 +522,7 @@
         tile.dataset.index = idx;
         if (idx === FINISH) {
           tile.classList.add('finish');
-          tile.innerHTML = '<svg class="finish-castle" viewBox="0 0 200 160"><use href="#sprite-castle"/></svg>';
+          tile.innerHTML = '<img class="finish-icon" src="finish-tile.png" alt="">';
         }
         tileEls[idx] = tile;
         board.appendChild(tile);
@@ -767,6 +768,7 @@
 
     var toFinish = FINISH - state.playerIndex;
     waiterToken.classList.toggle('active', toFinish > 0 && toFinish <= WAITER_DISTANCE);
+    tileEls[FINISH].classList.toggle('close', toFinish > 0 && toFinish <= FINISH_SPARKLE_DISTANCE);
   }
 
   function scrollPlayerIntoView() {
