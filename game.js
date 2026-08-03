@@ -287,6 +287,18 @@
         noiseBurst(0.15, { freq: 900, freqTo: 200, gain: 0.12 });
         tone(180, 0.12, { type: 'sine', slideTo: 60, gain: 0.08 });
       },
+      crowdChant: function () {
+        // Stadium-style "US! NEED! WIPE!" chant, built from noise (crowd murmur)
+        // plus rhythmic hits on the chant's 3-syllable cadence, played twice.
+        noiseBurst(1.6, { freq: 1200, freqTo: 2200, gain: 0.1 });
+        noiseBurst(1.6, { freq: 600, freqTo: 1400, gain: 0.08, delay: 0.05 });
+        var beats = [0, 0.32, 0.64, 1.1, 1.42, 1.74];
+        beats.forEach(function (t, i) {
+          var wipeSyllable = i % 3 === 2;
+          tone(wipeSyllable ? 330 : 220, 0.18, { type: 'square', gain: 0.16, delay: t });
+          noiseBurst(0.12, { freq: 2500, freqTo: 1000, gain: 0.07, delay: t });
+        });
+      },
       catchSfx: function () {
         noiseBurst(0.2, { freq: 1000, freqTo: 150, gain: 0.2 });
         tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.22 });
@@ -790,6 +802,22 @@
     showToast('💀 Reaper cleaned a poop zone ahead!', 'good');
   }
 
+  function spawnTpStreamers(container) {
+    var count = 16;
+    for (var i = 0; i < count; i++) {
+      var s = document.createElement('div');
+      s.className = 'tp-streamer';
+      var angle = (i / count) * Math.PI * 2 + Math.random() * 0.3;
+      var dist = 110 + Math.random() * 150;
+      s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      s.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+      s.style.animationDelay = (Math.random() * 0.15) + 's';
+      container.appendChild(s);
+      s.addEventListener('animationend', function () { this.remove(); });
+    }
+  }
+
   function spawnConfetti(container) {
     var colors = ['#ff6b6b', '#ffd23f', '#4fd44f', '#3ab0ff', '#c77dff'];
     for (var i = 0; i < 28; i++) {
@@ -1238,6 +1266,24 @@
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
     openOverlay(introOverlay);
   }
+
+  // ---------- Grand entrance: logo pop, TP streamers, and a crowd chant on game start ----------
+  (function () {
+    var siteLogo = document.getElementById('siteLogo');
+    var gameHeader = document.getElementById('gameHeader');
+    if (siteLogo && gameHeader) {
+      siteLogo.classList.add('intro-pop');
+      spawnTpStreamers(gameHeader);
+    }
+    function playCrowdChantOnce() {
+      Sound.unlock();
+      Sound.crowdChant();
+      document.removeEventListener('pointerdown', playCrowdChantOnce);
+      document.removeEventListener('keydown', playCrowdChantOnce);
+    }
+    document.addEventListener('pointerdown', playCrowdChantOnce, { once: true });
+    document.addEventListener('keydown', playCrowdChantOnce, { once: true });
+  })();
 
   // ---------- Day/night tint over the painted background, based on the visitor's local time ----------
   (function () {
