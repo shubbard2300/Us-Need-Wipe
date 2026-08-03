@@ -278,6 +278,15 @@
         tone(233, 0.4, { type: 'sawtooth', slideTo: 58, gain: 0.12, delay: 0.03 });
         noiseBurst(0.3, { freq: 2000, freqTo: 300, gain: 0.09, delay: 0.05 });
       },
+      reaperClean: function () {
+        tone(300, 0.12, { type: 'sine', slideTo: 700, gain: 0.14 });
+        tone(500, 0.14, { type: 'triangle', slideTo: 900, gain: 0.1, delay: 0.05 });
+        noiseBurst(0.2, { freq: 1800, freqTo: 3500, gain: 0.08, delay: 0.02 });
+      },
+      poof: function () {
+        noiseBurst(0.15, { freq: 900, freqTo: 200, gain: 0.12 });
+        tone(180, 0.12, { type: 'sine', slideTo: 60, gain: 0.08 });
+      },
       catchSfx: function () {
         noiseBurst(0.2, { freq: 1000, freqTo: 150, gain: 0.2 });
         tone(140, 0.28, { type: 'sawtooth', slideTo: 50, gain: 0.22 });
@@ -584,6 +593,8 @@
       gameOver: false,
       thirdBushActive: false,
       legionShown: false,
+      legionUsedThisTurn: false,
+      reaperUsedThisTurn: false,
       poopTiles: poopTiles,
       wipedTiles: new Set(),
       turboTiles: pickTurboTiles(poopTiles),
@@ -705,6 +716,80 @@
     img.addEventListener('animationend', function () { this.remove(); });
   }
 
+  function spawnPoopCloud(cx, cy) {
+    var symbols = ['💨', '💩', '💨', '💨'];
+    for (var i = 0; i < 6; i++) {
+      var s = document.createElement('span');
+      s.className = 'poop-puff';
+      s.textContent = symbols[randInt(0, symbols.length - 1)];
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 24 + Math.random() * 34;
+      s.style.left = cx + 'px';
+      s.style.top = cy + 'px';
+      s.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      s.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      board.appendChild(s);
+      s.addEventListener('animationend', function () { this.remove(); });
+    }
+  }
+
+  function spawnAbilityCharacter(anchorEl, src, extraClass) {
+    var boardRect = board.getBoundingClientRect();
+    var r = anchorEl.getBoundingClientRect();
+    var cx = r.left - boardRect.left + r.width / 2;
+    var cy = r.top - boardRect.top + r.height / 2;
+    var img = document.createElement('img');
+    img.className = 'ability-pop ' + extraClass;
+    img.src = src;
+    img.alt = '';
+    img.style.left = cx + 'px';
+    img.style.top = cy + 'px';
+    board.appendChild(img);
+    setTimeout(function () {
+      img.classList.add('poof-out');
+      Sound.poof();
+      spawnPoopCloud(cx, cy);
+      img.addEventListener('animationend', function () { img.remove(); });
+    }, 2200);
+  }
+
+  function useLegionAbility() {
+    if (state.gameOver) return;
+    if (state.legionUsedThisTurn) {
+      showToast('⚔️ Legion needs to rest — try again next turn.', 'bad');
+      return;
+    }
+    state.legionUsedThisTurn = true;
+    state.shield = true;
+    playerToken.classList.add('shielded');
+    Sound.legionArrive();
+    spawnAbilityCharacter(playerToken, 'legion.png', 'legion-ability-pop');
+    showToast('⚔️ Legion is protecting you from the bushes!', 'good');
+  }
+
+  function useReaperAbility() {
+    if (state.gameOver) return;
+    if (state.reaperUsedThisTurn) {
+      showToast('💀 Reaper needs to rest — try again next turn.', 'bad');
+      return;
+    }
+    var targetIdx = null;
+    for (var i = state.playerIndex; i < Math.min(FINISH, state.playerIndex + 8); i++) {
+      if (state.poopTiles.has(i) && !state.wipedTiles.has(i)) { targetIdx = i; break; }
+    }
+    if (targetIdx == null) {
+      showToast('💀 No poop zones nearby for Reaper to clean.', 'bad');
+      return;
+    }
+    state.reaperUsedThisTurn = true;
+    state.wipedTiles.add(targetIdx);
+    tileEls[targetIdx].classList.add('wiped');
+    Sound.reaperClean();
+    spawnSparkles(tileEls[targetIdx]);
+    spawnAbilityCharacter(tileEls[targetIdx], 'reaper.png', 'reaper-ability-pop');
+    showToast('💀 Reaper cleaned a poop zone ahead!', 'good');
+  }
+
   function spawnConfetti(container) {
     var colors = ['#ff6b6b', '#ffd23f', '#4fd44f', '#3ab0ff', '#c77dff'];
     for (var i = 0; i < 28; i++) {
@@ -804,6 +889,15 @@
     playerToken.classList.remove('bounce');
     void playerToken.offsetWidth;
     playerToken.classList.add('bounce');
+    vibrateTile(state.playerIndex);
+  }
+
+  function vibrateTile(idx) {
+    var el = tileEls[idx];
+    if (!el) return;
+    el.classList.remove('landed');
+    void el.offsetWidth;
+    el.classList.add('landed');
   }
 
   function startWipeQTE() {
@@ -1003,6 +1097,8 @@
   async function handleRoll() {
     if (state.busy || state.gameOver) return;
     state.busy = true;
+    state.legionUsedThisTurn = false;
+    state.reaperUsedThisTurn = false;
     rollBtn.disabled = true;
     Sound.unlock();
     Sound.startMusic();
@@ -1120,6 +1216,12 @@
     if (e.code === 'Space' && !rollBtn.disabled && wipeOverlay.classList.contains('hidden')) {
       e.preventDefault();
       handleRoll();
+    } else if (e.code === 'KeyL' || e.key === 'l' || e.key === 'L') {
+      e.preventDefault();
+      useLegionAbility();
+    } else if (e.code === 'KeyR' || e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      useReaperAbility();
     }
   });
 
