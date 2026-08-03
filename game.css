@@ -506,7 +506,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 
 .caught-card{background:#ffe9e9;}
 .win-card{max-width:420px;}
-.win-castle{width:160px;margin-bottom:6px;}
+.win-toilet{width:110px;display:block;margin:0 auto 6px;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));}
 .win-dancer{width:56px;position:absolute;bottom:18px;right:18px;animation:victory-dance .5s ease-in-out infinite;}
 @keyframes victory-dance{
   0%,100%{transform:translateY(0) rotate(-12deg);}
