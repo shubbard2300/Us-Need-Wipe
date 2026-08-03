@@ -612,7 +612,10 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   box-shadow:4px 5px 0 rgba(0,0,0,.2);
   animation:merch-cta-pulse 3.2s ease-in-out infinite;
 }
-.merch-cta-tag{margin:0 0 12px;font-weight:800;font-size:16px;color:#3a2b00;}
+.merch-cta-tag{margin:0 0 6px;font-weight:800;font-size:16px;color:#3a2b00;}
+.merch-cta-progress{margin:0 0 12px;font-size:13px;font-weight:700;color:#7a5a00;}
+.merch-cta-progress.unlocked{color:#1f8a1f;}
+.merch-cta-progress:empty{display:none;}
 .btn-merch{
   display:inline-block;
   text-decoration:none;

@@ -16,6 +16,10 @@
   var LEADERBOARD_KEY = 'usNeedWipeLeaderboard';
   var LEADERBOARD_SIZE = 5;
   var INTRO_SEEN_KEY = 'usNeedWipeSeenIntro';
+  var WIN_COUNT_KEY = 'usNeedWipeWinCount';
+  var MERCH_WIN_GOAL = 3;
+  // TODO: set the real Spreadshop discount code here once available, e.g. 'WIPE25'.
+  var MERCH_DISCOUNT_CODE = '';
 
   var WIPE_SUCCESS_MSGS = ['Nice wipe!', 'Squeaky clean!', 'Fresh as a daisy!', 'Crisis averted!', 'Smooth operator!'];
   var WIPE_FAIL_MSGS = ['Too slow... skid marks!', 'Yikes, missed it!', 'Not clean enough!', 'Whoops, try again next time!'];
@@ -851,6 +855,34 @@
     return nearest;
   }
 
+  function getWinCount() {
+    return parseInt(localStorage.getItem(WIN_COUNT_KEY) || '0', 10);
+  }
+
+  function incrementWinCount() {
+    var n = getWinCount() + 1;
+    localStorage.setItem(WIN_COUNT_KEY, String(n));
+    return n;
+  }
+
+  function updateMerchCta() {
+    var progressEl = document.getElementById('merchCtaProgress');
+    if (!progressEl) return;
+    var wins = getWinCount();
+    if (wins >= MERCH_WIN_GOAL) {
+      if (MERCH_DISCOUNT_CODE) {
+        progressEl.innerHTML = '🎉 Unlocked! Use code <strong>' + escapeHtml(MERCH_DISCOUNT_CODE) + '</strong> for 25% off.';
+      } else {
+        progressEl.innerHTML = '🎉 25% off unlocked after ' + wins + ' wins — code coming soon!';
+      }
+      progressEl.classList.add('unlocked');
+    } else {
+      var remaining = MERCH_WIN_GOAL - wins;
+      progressEl.innerHTML = '🏆 Win ' + remaining + ' more round' + (remaining === 1 ? '' : 's') + ' to unlock <strong>25% off</strong> merch!';
+      progressEl.classList.remove('unlocked');
+    }
+  }
+
   function updateHud() {
     scoreEl.textContent = state.score;
     wipesEl.textContent = state.wipes;
@@ -1099,6 +1131,8 @@
       kingLogPopup.classList.remove('show');
       void kingLogPopup.offsetWidth;
       kingLogPopup.classList.add('show');
+      incrementWinCount();
+      updateMerchCta();
       state.gameOver = true;
       submitAndShowGlobalLeaderboard(state.score, state.wipes);
       return true;
@@ -1262,6 +1296,7 @@
   buildBoard();
   resetGame();
   fetchMe();
+  updateMerchCta();
 
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
     openOverlay(introOverlay);
