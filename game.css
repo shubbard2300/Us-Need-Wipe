@@ -274,7 +274,17 @@ body{
   80%{transform:translateX(6px);}
 }
 
-.controls{text-align:center;margin:4px 0 20px;}
+.controls{
+  text-align:center;
+  margin:4px 0 20px;
+  position:sticky;
+  top:8px;
+  z-index:40;
+  background:rgba(255,253,247,.95);
+  border-radius:16px;
+  padding:10px 12px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
 .btn{
   font-family:inherit;
   font-weight:800;
@@ -506,7 +516,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 
 .caught-card{background:#ffe9e9;}
 .win-card{max-width:420px;}
-.win-toilet{width:110px;display:block;margin:0 auto 6px;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));}
+.win-toilet{width:90px;display:block;margin:0 auto 20px;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));}
 .win-dancer{width:56px;position:absolute;bottom:18px;right:18px;animation:victory-dance .5s ease-in-out infinite;}
 @keyframes victory-dance{
   0%,100%{transform:translateY(0) rotate(-12deg);}
@@ -519,9 +529,9 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 .king-log-pop.show{animation:king-pop-anim 1s cubic-bezier(.34,1.56,.64,1);}
 @keyframes king-pop-anim{
   0%{transform:scale(0) rotate(-18deg);opacity:0;}
-  50%{transform:scale(1.2) rotate(10deg);opacity:1;}
+  50%{transform:scale(1.08) rotate(10deg);opacity:1;}
   70%{transform:scale(0.94) rotate(-5deg);}
-  85%{transform:scale(1.04) rotate(2deg);}
+  85%{transform:scale(1.02) rotate(2deg);}
   100%{transform:scale(1) rotate(0deg);opacity:1;}
 }
 
