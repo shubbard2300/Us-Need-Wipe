@@ -87,8 +87,16 @@ body{
 .hud-item--warn.danger span:last-child{color:#c62828;}
 .hud-item{transition:transform .15s ease, box-shadow .15s ease;}
 .hud-item:hover{transform:translateY(-3px) scale(1.04);box-shadow:4px 5px 0 rgba(0,0,0,.2);}
-.hud-item.streak-hot span:last-child{color:#e07800;}
-.hud-item.streak-hot{animation:streak-pulse .5s ease;}
+.hud-mini-row{
+  display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap;
+  margin:-8px 0 14px;
+  font-size:12px;
+  color:#5a5a4f;
+  text-shadow:1px 1px 0 rgba(255,255,255,.6);
+}
+.hud-mini strong{font-size:14px;color:var(--ink);margin-left:3px;}
+.hud-mini.streak-hot{animation:streak-pulse .5s ease;}
+.hud-mini.streak-hot strong{color:#e07800;}
 @keyframes streak-pulse{
   0%{transform:scale(1);}
   40%{transform:scale(1.15);}
@@ -266,7 +274,7 @@ body{
   80%{transform:translateX(6px);}
 }
 
-.controls{text-align:center;margin-top:20px;}
+.controls{text-align:center;margin:4px 0 20px;}
 .btn{
   font-family:inherit;
   font-weight:800;
@@ -666,23 +674,6 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .hud{gap:8px;}
   .hud-item{padding:6px 10px;min-width:60px;}
   .btn-roll{font-size:16px;padding:12px 20px;}
-
-  /* On small screens the board can be tall enough that the roll button scrolls out of
-     view, so pin it to the top-left corner instead of leaving it in-flow at the bottom. */
-  .controls{
-    position:fixed;
-    top:calc(10px + env(safe-area-inset-top));left:10px;
-    z-index:40;
-    margin:0;
-    width:auto;
-    text-align:left;
-  }
-  .controls .hint{display:none;}
-  .controls .btn-roll{
-    font-size:14px;
-    padding:9px 16px;
-    box-shadow:3px 4px 0 rgba(0,0,0,.3);
-  }
 }
 
 /* Note: gentle continuous scenery/character motion (clouds, birds, trees, flags, sun,
@@ -692,7 +683,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 @media (prefers-reduced-motion: reduce){
   .die-icon,
   .win-dancer,
-  .hud-item.streak-hot,
+  .hud-mini.streak-hot,
   .tile.turbo:not(.used)::after,
   .wipe-emoji.poop-king{
     animation:none !important;

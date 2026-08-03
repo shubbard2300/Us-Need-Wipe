@@ -99,6 +99,11 @@
     <p class="tag">Race the board. Poop, wipe fast, don't get caught by the bushes.</p>
   </header>
 
+  <div class="controls">
+    <button type="button" id="rollBtn" class="btn btn-roll"><span class="die-icon" id="dieIcon">🎲</span> Roll &amp; Move <span id="dieFace"></span></button>
+    <p class="hint">Press <kbd>Space</kbd> to roll. When you land on 💩, mash <kbd>W</kbd> or tap WIPE before the bar runs out. Press <kbd>L</kbd> for Legion's shield or <kbd>R</kbd> for Reaper's clean-up — once each per turn.</p>
+  </div>
+
   <div class="hud">
     <button type="button" id="muteBtn" class="mute-btn" aria-label="Toggle sound">🔊</button>
     <button type="button" id="musicBtn" class="mute-btn" aria-label="Toggle music">🎵</button>
@@ -106,19 +111,16 @@
     <button type="button" id="leaderboardBtn" class="mute-btn" aria-label="Global leaderboard">🏆</button>
     <button type="button" id="authBtn" class="mute-btn" aria-label="Account">👤</button>
     <div class="hud-item"><span class="hud-label">Score</span><span id="score">0</span></div>
-    <div class="hud-item"><span class="hud-label">Best</span><span id="best">0</span></div>
-    <div class="hud-item"><span class="hud-label">Wipes</span><span id="wipes">0</span></div>
-    <div class="hud-item" id="streakHud"><span class="hud-label">Streak</span><span id="streak">0</span></div>
     <div class="hud-item hud-item--warn" id="proximityHud"><span class="hud-label">Bushes</span><span id="proximity">far</span></div>
+  </div>
+  <div class="hud-mini-row">
+    <span class="hud-mini">Best <strong id="best">0</strong></span>
+    <span class="hud-mini">Wipes <strong id="wipes">0</strong></span>
+    <span class="hud-mini" id="streakHud">Streak <strong id="streak">0</strong></span>
   </div>
 
   <div class="board-shell">
     <div class="board" id="board"></div>
-  </div>
-
-  <div class="controls">
-    <button type="button" id="rollBtn" class="btn btn-roll"><span class="die-icon" id="dieIcon">🎲</span> Roll &amp; Move <span id="dieFace"></span></button>
-    <p class="hint">Press <kbd>Space</kbd> to roll. When you land on 💩, mash <kbd>W</kbd> or tap WIPE before the bar runs out. Press <kbd>L</kbd> for Legion's shield or <kbd>R</kbd> for Reaper's clean-up — once each per turn.</p>
   </div>
 
   <div id="toast" class="toast"></div>
