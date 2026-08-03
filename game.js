@@ -1275,14 +1275,21 @@
       siteLogo.classList.add('intro-pop');
       spawnTpStreamers(gameHeader);
     }
+    var chantPlayed = false;
     function playCrowdChantOnce() {
+      if (chantPlayed) return;
+      chantPlayed = true;
       Sound.unlock();
       Sound.crowdChant();
-      document.removeEventListener('pointerdown', playCrowdChantOnce);
+      document.removeEventListener('click', playCrowdChantOnce);
+      document.removeEventListener('touchend', playCrowdChantOnce);
       document.removeEventListener('keydown', playCrowdChantOnce);
     }
-    document.addEventListener('pointerdown', playCrowdChantOnce, { once: true });
-    document.addEventListener('keydown', playCrowdChantOnce, { once: true });
+    // 'click'/'touchend' are the gesture types mobile browsers reliably treat as
+    // audio-unlocking; 'pointerdown' fires too early on iOS Safari to count.
+    document.addEventListener('click', playCrowdChantOnce);
+    document.addEventListener('touchend', playCrowdChantOnce);
+    document.addEventListener('keydown', playCrowdChantOnce);
   })();
 
   // ---------- Day/night tint over the painted background, based on the visitor's local time ----------

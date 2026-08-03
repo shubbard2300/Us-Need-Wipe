@@ -37,7 +37,7 @@ body{
 
 .game-header{text-align:center;margin-bottom:10px;position:relative;}
 .game-header h1{margin:0 0 4px;}
-.site-logo{width:min(420px,90%);height:auto;display:block;margin:0 auto;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));transition:transform .25s ease;}
+.site-logo{width:min(300px,80%);height:auto;display:block;margin:0 auto;filter:drop-shadow(2px 5px 8px rgba(0,0,0,.3));transition:transform .25s ease;}
 .site-logo:hover{transform:scale(1.04) rotate(-1deg);}
 .site-logo.intro-pop{animation:logo-grand-entrance 1.1s cubic-bezier(.34,1.56,.64,1);}
 @keyframes logo-grand-entrance{
@@ -666,6 +666,22 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .hud{gap:8px;}
   .hud-item{padding:6px 10px;min-width:60px;}
   .btn-roll{font-size:16px;padding:12px 20px;}
+
+  /* On small screens the board can be tall enough that the roll button scrolls out of
+     view, so pin it as a persistent bottom action bar instead of leaving it in-flow. */
+  .wrap{padding-bottom:90px;}
+  .controls{
+    position:fixed;
+    left:0;right:0;bottom:0;
+    z-index:40;
+    margin:0;
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,253,247,.96);
+    border-top:3px solid var(--ink);
+    box-shadow:0 -4px 10px rgba(0,0,0,.2);
+  }
+  .controls .hint{display:none;}
+  .controls .btn-roll{width:100%;max-width:360px;}
 }
 
 /* Note: gentle continuous scenery/character motion (clouds, birds, trees, flags, sun,
