@@ -668,20 +668,21 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .btn-roll{font-size:16px;padding:12px 20px;}
 
   /* On small screens the board can be tall enough that the roll button scrolls out of
-     view, so pin it as a persistent bottom action bar instead of leaving it in-flow. */
-  .wrap{padding-bottom:90px;}
+     view, so pin it to the top-left corner instead of leaving it in-flow at the bottom. */
   .controls{
     position:fixed;
-    left:0;right:0;bottom:0;
+    top:calc(10px + env(safe-area-inset-top));left:10px;
     z-index:40;
     margin:0;
-    padding:10px 12px calc(10px + env(safe-area-inset-bottom));
-    background:rgba(255,253,247,.96);
-    border-top:3px solid var(--ink);
-    box-shadow:0 -4px 10px rgba(0,0,0,.2);
+    width:auto;
+    text-align:left;
   }
   .controls .hint{display:none;}
-  .controls .btn-roll{width:100%;max-width:360px;}
+  .controls .btn-roll{
+    font-size:14px;
+    padding:9px 16px;
+    box-shadow:3px 4px 0 rgba(0,0,0,.3);
+  }
 }
 
 /* Note: gentle continuous scenery/character motion (clouds, birds, trees, flags, sun,
