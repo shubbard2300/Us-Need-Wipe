@@ -1,0 +1,267 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1785916893.897121,
+    "ast_hash": "dbe039a15c5c2eb60e34dccc1af0cbb5",
+    "semantic_hash": "dbe039a15c5c2eb60e34dccc1af0cbb5"
+  },
+  "api/_lib/auth.js": {
+    "mtime": 1785916861.5380485,
+    "ast_hash": "a26b0ec2225b1b5145bf7c6dd4e74737",
+    "semantic_hash": "a26b0ec2225b1b5145bf7c6dd4e74737"
+  },
+  "api/_lib/db.js": {
+    "mtime": 1785916861.5382366,
+    "ast_hash": "28f00b5d7972f0b01a3e61cfebeadcae",
+    "semantic_hash": "28f00b5d7972f0b01a3e61cfebeadcae"
+  },
+  "api/auth/delete.js": {
+    "mtime": 1785916861.5382366,
+    "ast_hash": "8120fd77f166cd1c47d16482404be4d7",
+    "semantic_hash": "8120fd77f166cd1c47d16482404be4d7"
+  },
+  "api/auth/login.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "8c4182f6c1443c9cd86286f3c81ab94b",
+    "semantic_hash": "8c4182f6c1443c9cd86286f3c81ab94b"
+  },
+  "api/auth/logout.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "cc9e0de9ca3a1c91647ae2287b74c192",
+    "semantic_hash": "cc9e0de9ca3a1c91647ae2287b74c192"
+  },
+  "api/auth/me.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "e61b16d0f0f290b58351f812db613177",
+    "semantic_hash": "e61b16d0f0f290b58351f812db613177"
+  },
+  "api/auth/signup.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "7ff7514af1d76fd5ca05c2cfe6304af8",
+    "semantic_hash": "7ff7514af1d76fd5ca05c2cfe6304af8"
+  },
+  "api/leaderboard.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "e075faee9177bb28e71575736b00cef5",
+    "semantic_hash": "e075faee9177bb28e71575736b00cef5"
+  },
+  "api/scores.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "5001aae7103b625c70f054e7fdc00354",
+    "semantic_hash": "5001aae7103b625c70f054e7fdc00354"
+  },
+  "game.js": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "7ca7eb236a7133c91e0a5f111ddaf324",
+    "semantic_hash": "7ca7eb236a7133c91e0a5f111ddaf324"
+  },
+  "package.json": {
+    "mtime": 1785916861.553119,
+    "ast_hash": "e36cb003a6561dc48372b7cfc5db51b5",
+    "semantic_hash": "e36cb003a6561dc48372b7cfc5db51b5"
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1785916882.7272189,
+    "ast_hash": "9b31786b637be3c13978bec4c2330752",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/SKILL.md": {
+    "mtime": 1785916882.7271113,
+    "ast_hash": "dfb0a6554c4af62df6effc61c6c7d245",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/add-watch.md": {
+    "mtime": 1785916226.8850813,
+    "ast_hash": "d59d027fe449f06aa03905a01184e779",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/exports.md": {
+    "mtime": 1785916226.8850813,
+    "ast_hash": "9da2a2152e60a22f07f05fed5158f287",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/extraction-spec.md": {
+    "mtime": 1785916226.8850813,
+    "ast_hash": "42fef56a01698118f7fd722acdadea34",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/github-and-merge.md": {
+    "mtime": 1785916226.8850813,
+    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/hooks.md": {
+    "mtime": 1785916226.889978,
+    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/query.md": {
+    "mtime": 1785916226.889978,
+    "ast_hash": "3c46f8ad006874260614ed8657d02307",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/transcribe.md": {
+    "mtime": 1785916226.889978,
+    "ast_hash": "67b6a5fa6c0974e18f60db9f8932fbd8",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/update.md": {
+    "mtime": 1785916226.889978,
+    "ast_hash": "9378bd03d56baaf78bd738ab3848f142",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1785916925.1851227,
+    "ast_hash": "832118c3b92d5653a8d960a98502e3b2",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1785916861.497119,
+    "ast_hash": "882d8408d0f7951c8de84d6f784b012f",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "cb37bdd0db09a08383dab3e707fa28bb",
+    "semantic_hash": ""
+  },
+  "robots.txt": {
+    "mtime": 1785916861.557119,
+    "ast_hash": "d51885657f49aed1fb7f7a4b3407e71a",
+    "semantic_hash": ""
+  },
+  "AngryBushOne.png": {
+    "mtime": 1785916861.409119,
+    "ast_hash": "7c36e72c389e9baeee27eabe0bd34785",
+    "semantic_hash": ""
+  },
+  "AngryBushTwo.png": {
+    "mtime": 1785916861.412376,
+    "ast_hash": "313222bb4cf090e28a15b056400ff419",
+    "semantic_hash": ""
+  },
+  "BackgroundOne.png": {
+    "mtime": 1785916861.4691188,
+    "ast_hash": "dbc781f6f91daf23a5ed8a315181b8cc",
+    "semantic_hash": ""
+  },
+  "BadWipeNew.png": {
+    "mtime": 1785916861.477119,
+    "ast_hash": "ed94de617c17fd6886904e0af89be2b3",
+    "semantic_hash": ""
+  },
+  "CastleBackground.png": {
+    "mtime": 1785916861.4891188,
+    "ast_hash": "866b3f3d5f040563bc928104bf7ed6b6",
+    "semantic_hash": ""
+  },
+  "CleanO.png": {
+    "mtime": 1785916861.493119,
+    "ast_hash": "a82263009996e774b596abf313f3a823",
+    "semantic_hash": ""
+  },
+  "HappyToilet.png": {
+    "mtime": 1785916861.493119,
+    "ast_hash": "df7f00ac4f041be91507f85d5941fe9a",
+    "semantic_hash": ""
+  },
+  "HappyToiletPaperMan.png": {
+    "mtime": 1785916861.497119,
+    "ast_hash": "a330b1f35cd14ab83c9dab98ef00b343",
+    "semantic_hash": ""
+  },
+  "Legion.png": {
+    "mtime": 1785916861.497119,
+    "ast_hash": "4ff6c7a0d3520976003de56215a80a6a",
+    "semantic_hash": ""
+  },
+  "Reaper.png": {
+    "mtime": 1785916861.501119,
+    "ast_hash": "1319552b51d0c3ba7cc37ae249cfe415",
+    "semantic_hash": ""
+  },
+  "UsNeedWipeLogo.png": {
+    "mtime": 1785916861.517119,
+    "ast_hash": "ccb82da012bf24d07923ef35959dbce4",
+    "semantic_hash": ""
+  },
+  "UsNeedWipeLogo2.png": {
+    "mtime": 1785916861.533119,
+    "ast_hash": "c00250c814c689ec9a9e2401975e82ad",
+    "semantic_hash": ""
+  },
+  "apple-touch-icon.png": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "ae7f454960ccabd3613292087295d467",
+    "semantic_hash": ""
+  },
+  "background-scene.jpg": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "c165e030dec1294a22b9dd5b2e84c685",
+    "semantic_hash": ""
+  },
+  "bush-token-1.png": {
+    "mtime": 1785916861.5411189,
+    "ast_hash": "b48adb1579272bd86d6a3cc032bf69c5",
+    "semantic_hash": ""
+  },
+  "bush-token-2.png": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "616feff38ed7cc9dc9c24569c64d8505",
+    "semantic_hash": ""
+  },
+  "favicon-16x16.png": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "54393f965bb2fe2802bee8e790b88f93",
+    "semantic_hash": ""
+  },
+  "favicon-32x32.png": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "1662f7531b3575920127bc7497bab89e",
+    "semantic_hash": ""
+  },
+  "favicon.svg": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "f6ec49a15585c1a55d2b01a34a0b97dd",
+    "semantic_hash": ""
+  },
+  "finish-tile.png": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "f3103b33f24fde496abb9da77f13d9b1",
+    "semantic_hash": ""
+  },
+  "king-log.png": {
+    "mtime": 1785916861.549119,
+    "ast_hash": "284ddfcce6133a512f08dd3ba473895b",
+    "semantic_hash": ""
+  },
+  "kingLog.png": {
+    "mtime": 1785916861.549119,
+    "ast_hash": "a44744a35301f6f7cc9d163ba28ef2e5",
+    "semantic_hash": ""
+  },
+  "legion.png": {
+    "mtime": 1785916861.549119,
+    "ast_hash": "b2f1b37af60d921ff67db75398bb9d10",
+    "semantic_hash": ""
+  },
+  "logo.png": {
+    "mtime": 1785916861.553119,
+    "ast_hash": "af38100c6de40e06e17a34620fa7d9c3",
+    "semantic_hash": ""
+  },
+  "reaper.png": {
+    "mtime": 1785916861.557119,
+    "ast_hash": "85cbfad5429c9e08ef0e959a2db1f34c",
+    "semantic_hash": ""
+  },
+  "wipe-clean.png": {
+    "mtime": 1785916861.557119,
+    "ast_hash": "d9decf72d8d6d6e52dc63b0861129fd9",
+    "semantic_hash": ""
+  },
+  "wipe-fail.png": {
+    "mtime": 1785916861.5611188,
+    "ast_hash": "4cf6beef47314887f161cdcac5ddc18c",
+    "semantic_hash": ""
+  }
+}
