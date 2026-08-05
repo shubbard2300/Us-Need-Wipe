@@ -1194,6 +1194,9 @@
 
     if (state.poopTiles.has(landedIndex) && !state.wipedTiles.has(landedIndex)) {
       Sound.plop();
+      var poopEl = tileEls[landedIndex];
+      poopEl.classList.add('poop-hit');
+      setTimeout(function () { poopEl.classList.remove('poop-hit'); }, 700);
       var success = await startWipeQTE();
       if (success) {
         state.wipedTiles.add(landedIndex);

@@ -169,6 +169,16 @@ body{
   pointer-events:none;
   animation:poop-smell 2s ease-in-out infinite;
 }
+.tile.poop.poop-hit:not(.wiped)::after{animation:poop-laugh .7s ease-in-out 1;}
+@keyframes poop-laugh{
+  0%{transform:scale(1) rotate(0deg);}
+  15%{transform:scale(1.5) rotate(-14deg);}
+  30%{transform:scale(1.25) rotate(12deg);}
+  45%{transform:scale(1.45) rotate(-10deg);}
+  60%{transform:scale(1.2) rotate(8deg);}
+  80%{transform:scale(1.3) rotate(-6deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
 @keyframes poop-smell{
   0%{opacity:0;transform:translate(0,0) scale(.7);}
   20%{opacity:.9;}
@@ -723,7 +733,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
     animation:none !important;
   }
   .board-shell.shake{animation:none !important;}
-  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent,.wipe-card.urgent .reaper-pop,.tile.landed{animation-duration:.01s !important;}
+  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent,.wipe-card.urgent .reaper-pop,.tile.landed,.tile.poop.poop-hit:not(.wiped)::after{animation-duration:.01s !important;}
   .tile.poop:not(.wiped):hover::after,
   .tile.turbo:not(.used):hover::after,
   .tile.finish:hover .finish-icon,
