@@ -1,0 +1,62 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1785916893.897121,
+    "ast_hash": "dbe039a15c5c2eb60e34dccc1af0cbb5",
+    "semantic_hash": "dbe039a15c5c2eb60e34dccc1af0cbb5"
+  },
+  "api/_lib/auth.js": {
+    "mtime": 1785916861.5380485,
+    "ast_hash": "a26b0ec2225b1b5145bf7c6dd4e74737",
+    "semantic_hash": "a26b0ec2225b1b5145bf7c6dd4e74737"
+  },
+  "api/_lib/db.js": {
+    "mtime": 1785916861.5382366,
+    "ast_hash": "28f00b5d7972f0b01a3e61cfebeadcae",
+    "semantic_hash": "28f00b5d7972f0b01a3e61cfebeadcae"
+  },
+  "api/auth/delete.js": {
+    "mtime": 1785916861.5382366,
+    "ast_hash": "8120fd77f166cd1c47d16482404be4d7",
+    "semantic_hash": "8120fd77f166cd1c47d16482404be4d7"
+  },
+  "api/auth/login.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "8c4182f6c1443c9cd86286f3c81ab94b",
+    "semantic_hash": "8c4182f6c1443c9cd86286f3c81ab94b"
+  },
+  "api/auth/logout.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "cc9e0de9ca3a1c91647ae2287b74c192",
+    "semantic_hash": "cc9e0de9ca3a1c91647ae2287b74c192"
+  },
+  "api/auth/me.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "e61b16d0f0f290b58351f812db613177",
+    "semantic_hash": "e61b16d0f0f290b58351f812db613177"
+  },
+  "api/auth/signup.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "7ff7514af1d76fd5ca05c2cfe6304af8",
+    "semantic_hash": "7ff7514af1d76fd5ca05c2cfe6304af8"
+  },
+  "api/leaderboard.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "e075faee9177bb28e71575736b00cef5",
+    "semantic_hash": "e075faee9177bb28e71575736b00cef5"
+  },
+  "api/scores.js": {
+    "mtime": 1785916861.5385735,
+    "ast_hash": "5001aae7103b625c70f054e7fdc00354",
+    "semantic_hash": "5001aae7103b625c70f054e7fdc00354"
+  },
+  "game.js": {
+    "mtime": 1785916861.5451188,
+    "ast_hash": "7ca7eb236a7133c91e0a5f111ddaf324",
+    "semantic_hash": "7ca7eb236a7133c91e0a5f111ddaf324"
+  },
+  "package.json": {
+    "mtime": 1785916861.553119,
+    "ast_hash": "e36cb003a6561dc48372b7cfc5db51b5",
+    "semantic_hash": "e36cb003a6561dc48372b7cfc5db51b5"
+  }
+}
