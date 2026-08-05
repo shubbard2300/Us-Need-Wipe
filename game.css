@@ -155,7 +155,11 @@ body{
 }
 .tile.poop{background:var(--path-poop);border-color:#c98b3c;}
 .tile.poop.wiped{background:var(--path-safe);border-color:#cbb783;}
-.tile.poop:not(.wiped)::after{content:"💩";position:absolute;font-size:clamp(14px,3vw,22px);}
+.tile.poop:not(.wiped)::after{content:"💩";position:absolute;font-size:clamp(20px,4.5vw,34px);animation:poop-idle-wobble 1.8s ease-in-out infinite;}
+@keyframes poop-idle-wobble{
+  0%,100%{transform:rotate(-6deg) scale(1);}
+  50%{transform:rotate(6deg) scale(1.1);}
+}
 .tile.turbo{background:#fff3b0;border-color:#e0a400;}
 .tile.turbo.used{background:var(--path-safe);border-color:#cbb783;}
 .tile.turbo:not(.used)::after{content:"⚡";position:absolute;font-size:clamp(14px,3vw,22px);animation:turbo-pulse 1s ease-in-out infinite;}
@@ -698,6 +702,7 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .win-dancer,
   .hud-mini.streak-hot,
   .tile.turbo:not(.used)::after,
+  .tile.poop:not(.wiped)::after,
   .wipe-emoji.poop-king{
     animation:none !important;
   }
