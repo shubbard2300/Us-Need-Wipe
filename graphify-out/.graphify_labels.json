@@ -1,1 +1,24 @@
-{"0": "game.js", "1": "auth.js", "2": "db.js", "3": "handleRoll", "4": "checkWin", "5": "randInt", "6": "package.json"}
+{
+  "0": "game.js",
+  "1": "auth.js",
+  "2": "What You Must Do When Invoked",
+  "3": "moveBushes",
+  "4": "checkWin",
+  "5": "showToast",
+  "6": "package.json",
+  "7": "/graphify",
+  "8": "graphify reference: extra exports and benchmark",
+  "9": "handleRoll",
+  "10": "randInt",
+  "11": "graphify reference: query, path, explain",
+  "12": "noiseBurst",
+  "13": "getTint",
+  "14": "graphify reference: add a URL and watch a folder",
+  "15": "graphify reference: commit hook and native CLAUDE.md integration",
+  "16": "graphify reference: incremental update and cluster-only",
+  "17": "graphify",
+  "18": "graphify reference: GitHub clone and cross-repo merge",
+  "19": "graphify reference: transcribe video and audio",
+  "20": ".claude/CLAUDE.md",
+  "21": "extraction-spec.md"
+}
