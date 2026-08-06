@@ -4,6 +4,11 @@
   "private": true,
   "description": "Us Need Wipe — static frontend with Vercel serverless API routes for accounts and a global leaderboard.",
   "dependencies": {
-    "pg": "^8.11.5"
+    "@higgsfield/cli": "^1.1.20",
+    "pg": "^8.11.5",
+    "ponytail": "^1.0.57"
+  },
+  "devDependencies": {
+    "@dondonudonjp/nanobanana-mcp-server": "^0.5.1"
   }
 }

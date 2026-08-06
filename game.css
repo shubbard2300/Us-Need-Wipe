@@ -154,8 +154,46 @@ body{
   80%{transform:translate(2px,1px);}
 }
 .tile.poop{background:var(--path-poop);border-color:#c98b3c;}
+.tile.poop:not(.wiped){animation:poop-tile-glow 2.4s ease-in-out infinite;}
+.tile.poop.landed:not(.wiped){animation:tile-vibrate .3s ease, poop-tile-glow 2.4s ease-in-out infinite;}
+@keyframes poop-tile-glow{
+  0%,100%{box-shadow:0 0 0 rgba(201,139,60,0);}
+  50%{box-shadow:0 0 12px 2px rgba(201,139,60,.65);}
+}
 .tile.poop.wiped{background:var(--path-safe);border-color:#cbb783;}
-.tile.poop:not(.wiped)::after{content:"💩";position:absolute;font-size:clamp(14px,3vw,22px);}
+.tile.poop:not(.wiped)::after{content:"💩";position:absolute;font-size:clamp(26px,6vw,44px);animation:poop-idle-wobble 1.8s ease-in-out infinite;}
+@keyframes poop-idle-wobble{
+  0%,100%{transform:rotate(-6deg) skewX(0deg) scale(1);}
+  25%{transform:rotate(2deg) skewX(6deg) scale(1.04);}
+  50%{transform:rotate(6deg) skewX(-5deg) scale(1.1);}
+  75%{transform:rotate(-2deg) skewX(5deg) scale(1.04);}
+}
+.tile.poop:not(.wiped)::before{
+  content:"〰️";
+  position:absolute;
+  top:2%;right:10%;
+  font-size:clamp(10px,2.2vw,16px);
+  opacity:0;
+  pointer-events:none;
+  animation:poop-steam 2.2s ease-in-out infinite;
+}
+.tile.poop.poop-hit:not(.wiped)::after{animation:poop-laugh .7s ease-in-out 1;}
+@keyframes poop-laugh{
+  0%{transform:scale(1) rotate(0deg);}
+  15%{transform:scale(1.5) rotate(-14deg);}
+  30%{transform:scale(1.25) rotate(12deg);}
+  45%{transform:scale(1.45) rotate(-10deg);}
+  60%{transform:scale(1.2) rotate(8deg);}
+  80%{transform:scale(1.3) rotate(-6deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
+@keyframes poop-steam{
+  0%{opacity:0;transform:rotate(-90deg) translate(0,0) scale(.7);}
+  20%{opacity:.85;}
+  40%{transform:rotate(-90deg) translate(4px,-7px) scale(.9);}
+  60%{opacity:.5;transform:rotate(-90deg) translate(-4px,-13px) scale(1.05);}
+  100%{opacity:0;transform:rotate(-90deg) translate(3px,-20px) scale(1.2);}
+}
 .tile.turbo{background:#fff3b0;border-color:#e0a400;}
 .tile.turbo.used{background:var(--path-safe);border-color:#cbb783;}
 .tile.turbo:not(.used)::after{content:"⚡";position:absolute;font-size:clamp(14px,3vw,22px);animation:turbo-pulse 1s ease-in-out infinite;}
@@ -698,11 +736,13 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
   .win-dancer,
   .hud-mini.streak-hot,
   .tile.turbo:not(.used)::after,
+  .tile.poop:not(.wiped)::after,
+  .tile.poop:not(.wiped)::before,
   .wipe-emoji.poop-king{
     animation:none !important;
   }
   .board-shell.shake{animation:none !important;}
-  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent,.wipe-card.urgent .reaper-pop,.tile.landed{animation-duration:.01s !important;}
+  .token.bush.lunge,.token.bush.snarl svg,.wipe-card.urgent,.wipe-card.urgent .reaper-pop,.tile.landed,.tile.poop.poop-hit:not(.wiped)::after{animation-duration:.01s !important;}
   .tile.poop:not(.wiped):hover::after,
   .tile.turbo:not(.used):hover::after,
   .tile.finish:hover .finish-icon,

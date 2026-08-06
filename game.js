@@ -107,10 +107,17 @@
     var musicIntervalMs = 118; // ~128 BPM at 16th-note resolution — upbeat dance-pop tempo
     var intensity = 0;
 
-    // K-pop-inspired dance-pop loop: bright syncopated hook (with rests, not a note every
+    // K-pop-inspired dance-pop loop: bright syncopated hooks (with rests, not a note every
     // step) over a bouncing I-V-vi-IV bassline, plus a four-on-the-floor kick, backbeat
     // snare/clap, and 8th-note hats. 16 steps = one bar of 4/4 at 16th-note resolution.
-    var MELODY = [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046];
+    // Three melodic phrases rotate over the same chord progression (verse/hook/bridge
+    // style) so the loop doesn't feel like one bar repeating forever.
+    var MELODY_HOOK = [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046];
+    var MELODY_VERSE = [523, 659, 0, 784, 659, 0, 880, 0, 587, 698, 0, 880, 698, 0, 784, 0];
+    var MELODY_BRIDGE = [784, 0, 659, 0, 587, 659, 0, 784, 880, 0, 784, 659, 0, 587, 0, 659];
+    var MELODIES = [MELODY_HOOK, MELODY_VERSE, MELODY_HOOK, MELODY_BRIDGE];
+    var BARS_PER_PHRASE = 4;
+    var melodyIndex = 0;
     var BASS = [131, 0, 262, 0, 196, 0, 392, 0, 110, 0, 220, 0, 175, 0, 350, 0];
     var KICK_STEPS = [0, 4, 8, 12];
     var SNARE_STEPS = [4, 12];
@@ -179,7 +186,12 @@
 
     function playMusicStep() {
       if (muted || !musicOn) return;
-      var i = musicStep % MELODY.length;
+      var i = musicStep % 16;
+      if (i === 0 && musicStep > 0) {
+        var bar = musicStep / 16;
+        if (bar % BARS_PER_PHRASE === 0) melodyIndex = (melodyIndex + 1) % MELODIES.length;
+      }
+      var MELODY = MELODIES[melodyIndex];
       var pitchUp = intensity >= 2 ? 1.12 : 1;
 
       if (KICK_STEPS.indexOf(i) !== -1) {
@@ -220,6 +232,7 @@
       startMusic: function () {
         if (musicTimer || !musicOn) return;
         musicStep = 0;
+        melodyIndex = 0;
         musicTimer = setInterval(playMusicStep, musicIntervalMs);
       },
       stopMusic: function () {
@@ -384,7 +397,7 @@
     localStorage.setItem(INTRO_SEEN_KEY, '1');
   });
 
-  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay', 'authOverlay', 'globalBoardOverlay'];
+  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay', 'authOverlay', 'globalBoardOverlay', 'promoOverlay'];
   dismissableOverlayIds.forEach(function (id) {
     var el = document.getElementById(id);
     el.addEventListener('click', function (e) {
@@ -407,6 +420,49 @@
   document.getElementById('supportBtn').addEventListener('click', function () { openOverlay(document.getElementById('supportOverlay')); });
   document.getElementById('privacyBtn').addEventListener('click', function () { openOverlay(document.getElementById('privacyOverlay')); });
   document.getElementById('faqBtn').addEventListener('click', function () { openOverlay(document.getElementById('faqOverlay')); });
+
+  var promoOverlay = document.getElementById('promoOverlay');
+  var promoFormWrap = document.getElementById('promoForm-wrap');
+  var promoForm = document.getElementById('promoForm');
+  var promoEmail = document.getElementById('promoEmail');
+  var promoError = document.getElementById('promoError');
+  var promoSubmitBtn = document.getElementById('promoSubmitBtn');
+  var promoSuccess = document.getElementById('promoSuccess');
+
+  document.getElementById('promoBtn').addEventListener('click', function () {
+    promoError.classList.add('hidden');
+    promoFormWrap.classList.remove('hidden');
+    promoSuccess.classList.add('hidden');
+    openOverlay(promoOverlay);
+  });
+
+  promoForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    promoError.classList.add('hidden');
+    var email = promoEmail.value.trim();
+    promoSubmitBtn.disabled = true;
+    try {
+      var res = await fetch('/api/promo-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        promoError.textContent = data.error || 'Something went wrong.';
+        promoError.classList.remove('hidden');
+        return;
+      }
+      promoForm.reset();
+      promoFormWrap.classList.add('hidden');
+      promoSuccess.classList.remove('hidden');
+    } catch (err) {
+      promoError.textContent = 'Network error — try again.';
+      promoError.classList.remove('hidden');
+    } finally {
+      promoSubmitBtn.disabled = false;
+    }
+  });
 
   // ---------- Accounts & global leaderboard ----------
   function escapeHtml(s) {
@@ -1194,6 +1250,9 @@
 
     if (state.poopTiles.has(landedIndex) && !state.wipedTiles.has(landedIndex)) {
       Sound.plop();
+      var poopEl = tileEls[landedIndex];
+      poopEl.classList.add('poop-hit');
+      setTimeout(function () { poopEl.classList.remove('poop-hit'); }, 700);
       var success = await startWipeQTE();
       if (success) {
         state.wipedTiles.add(landedIndex);
