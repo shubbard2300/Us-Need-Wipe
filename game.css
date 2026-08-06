@@ -163,17 +163,19 @@ body{
 .tile.poop.wiped{background:var(--path-safe);border-color:#cbb783;}
 .tile.poop:not(.wiped)::after{content:"💩";position:absolute;font-size:clamp(26px,6vw,44px);animation:poop-idle-wobble 1.8s ease-in-out infinite;}
 @keyframes poop-idle-wobble{
-  0%,100%{transform:rotate(-6deg) scale(1);}
-  50%{transform:rotate(6deg) scale(1.1);}
+  0%,100%{transform:rotate(-6deg) skewX(0deg) scale(1);}
+  25%{transform:rotate(2deg) skewX(6deg) scale(1.04);}
+  50%{transform:rotate(6deg) skewX(-5deg) scale(1.1);}
+  75%{transform:rotate(-2deg) skewX(5deg) scale(1.04);}
 }
 .tile.poop:not(.wiped)::before{
-  content:"💨";
+  content:"〰️";
   position:absolute;
-  top:4%;right:8%;
-  font-size:clamp(10px,2.4vw,18px);
+  top:2%;right:10%;
+  font-size:clamp(10px,2.2vw,16px);
   opacity:0;
   pointer-events:none;
-  animation:poop-smell 2s ease-in-out infinite;
+  animation:poop-steam 2.2s ease-in-out infinite;
 }
 .tile.poop.poop-hit:not(.wiped)::after{animation:poop-laugh .7s ease-in-out 1;}
 @keyframes poop-laugh{
@@ -185,11 +187,12 @@ body{
   80%{transform:scale(1.3) rotate(-6deg);}
   100%{transform:scale(1) rotate(0deg);}
 }
-@keyframes poop-smell{
-  0%{opacity:0;transform:translate(0,0) scale(.7);}
-  20%{opacity:.9;}
-  60%{opacity:.5;}
-  100%{opacity:0;transform:translate(6px,-16px) scale(1.2);}
+@keyframes poop-steam{
+  0%{opacity:0;transform:rotate(-90deg) translate(0,0) scale(.7);}
+  20%{opacity:.85;}
+  40%{transform:rotate(-90deg) translate(4px,-7px) scale(.9);}
+  60%{opacity:.5;transform:rotate(-90deg) translate(-4px,-13px) scale(1.05);}
+  100%{opacity:0;transform:rotate(-90deg) translate(3px,-20px) scale(1.2);}
 }
 .tile.turbo{background:#fff3b0;border-color:#e0a400;}
 .tile.turbo.used{background:var(--path-safe);border-color:#cbb783;}
