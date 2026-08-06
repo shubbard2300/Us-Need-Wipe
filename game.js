@@ -397,7 +397,7 @@
     localStorage.setItem(INTRO_SEEN_KEY, '1');
   });
 
-  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay', 'authOverlay', 'globalBoardOverlay'];
+  var dismissableOverlayIds = ['introOverlay', 'supportOverlay', 'privacyOverlay', 'faqOverlay', 'authOverlay', 'globalBoardOverlay', 'promoOverlay'];
   dismissableOverlayIds.forEach(function (id) {
     var el = document.getElementById(id);
     el.addEventListener('click', function (e) {
@@ -420,6 +420,49 @@
   document.getElementById('supportBtn').addEventListener('click', function () { openOverlay(document.getElementById('supportOverlay')); });
   document.getElementById('privacyBtn').addEventListener('click', function () { openOverlay(document.getElementById('privacyOverlay')); });
   document.getElementById('faqBtn').addEventListener('click', function () { openOverlay(document.getElementById('faqOverlay')); });
+
+  var promoOverlay = document.getElementById('promoOverlay');
+  var promoFormWrap = document.getElementById('promoForm-wrap');
+  var promoForm = document.getElementById('promoForm');
+  var promoEmail = document.getElementById('promoEmail');
+  var promoError = document.getElementById('promoError');
+  var promoSubmitBtn = document.getElementById('promoSubmitBtn');
+  var promoSuccess = document.getElementById('promoSuccess');
+
+  document.getElementById('promoBtn').addEventListener('click', function () {
+    promoError.classList.add('hidden');
+    promoFormWrap.classList.remove('hidden');
+    promoSuccess.classList.add('hidden');
+    openOverlay(promoOverlay);
+  });
+
+  promoForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    promoError.classList.add('hidden');
+    var email = promoEmail.value.trim();
+    promoSubmitBtn.disabled = true;
+    try {
+      var res = await fetch('/api/promo-signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        promoError.textContent = data.error || 'Something went wrong.';
+        promoError.classList.remove('hidden');
+        return;
+      }
+      promoForm.reset();
+      promoFormWrap.classList.add('hidden');
+      promoSuccess.classList.remove('hidden');
+    } catch (err) {
+      promoError.textContent = 'Network error — try again.';
+      promoError.classList.remove('hidden');
+    } finally {
+      promoSubmitBtn.disabled = false;
+    }
+  });
 
   // ---------- Accounts & global leaderboard ----------
   function escapeHtml(s) {

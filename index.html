@@ -153,6 +153,8 @@
     <button type="button" id="privacyBtn" class="footer-link">Privacy Policy</button>
     <span class="footer-dot">·</span>
     <button type="button" id="faqBtn" class="footer-link">FAQ</button>
+    <span class="footer-dot">·</span>
+    <button type="button" id="promoBtn" class="footer-link">Get Updates</button>
   </footer>
 </main>
 
@@ -192,8 +194,9 @@
     <h2>🔒 Privacy Policy</h2>
     <p>You can play as a guest with nothing stored beyond your own device, or create an account to appear on the global leaderboard. Here's exactly what each involves.</p>
     <p><strong>Playing as a guest (no account):</strong> everything stays in your browser's local storage, on your own device — your best score and top-5 local runs, whether you've seen the "How to Play" intro, and your sound/music preferences. Nothing is sent anywhere. Clearing your browser data removes all of it.</p>
-    <p><strong>If you create an account:</strong> we store your username, a securely hashed password (never the password itself, never in plain text), and the scores you submit, in a database, solely to power the global leaderboard. No email address is required or collected.</p>
-    <p>There's no analytics, no third-party tracking, and nothing is sold or shared. You can delete your account and all associated scores at any time from the account menu.</p>
+    <p><strong>If you create an account:</strong> we store your username, a securely hashed password (never the password itself, never in plain text), and the scores you submit, in a database, solely to power the global leaderboard. No email address is required or collected for an account.</p>
+    <p><strong>If you sign up for email updates:</strong> we store the email address you enter, solely to send you occasional Us Need Wipe news and promotions. We won't sell or share it, and you can unsubscribe any time. This is completely separate and optional — it's never required to play or to have an account.</p>
+    <p>Nothing is sold or shared with third parties. You can delete your account and all associated scores at any time from the account menu.</p>
   </div>
 </div>
 
@@ -208,6 +211,27 @@
     <p><strong>Can I turn off the sound or music?</strong><br>Yes, use the 🔊 and 🎵 buttons above the board. Your preference is remembered.</p>
     <p><strong>What do the ⚡ tiles do?</strong><br>They grant a one-time shield that blocks the next bush catch.</p>
     <p><strong>Does it work on mobile?</strong><br>Yes, tap to roll and tap WIPE — no keyboard required.</p>
+  </div>
+</div>
+
+<!-- Promo email signup -->
+<div id="promoOverlay" class="overlay hidden">
+  <div class="wipe-card info-card">
+    <button type="button" class="modal-close" data-close="promoOverlay" aria-label="Close">✕</button>
+    <h2>📧 Get Updates</h2>
+    <div id="promoForm-wrap">
+      <p>Drop your email for occasional news and promotions about Us Need Wipe. No spam, unsubscribe any time.</p>
+      <form id="promoForm" class="auth-form">
+        <label>Email
+          <input type="email" id="promoEmail" autocomplete="email" maxlength="200" required>
+        </label>
+        <p id="promoError" class="auth-error hidden"></p>
+        <button type="submit" class="btn btn-roll" id="promoSubmitBtn">Sign Me Up</button>
+      </form>
+    </div>
+    <div id="promoSuccess" class="hidden">
+      <p>🎉 You're on the list — thanks!</p>
+    </div>
   </div>
 </div>
 

@@ -65,6 +65,16 @@ function ensureSchema() {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
       `);
+      await p.query(`
+        CREATE TABLE IF NOT EXISTS unw_promo_signups (
+          id SERIAL PRIMARY KEY,
+          email TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `);
+      await p.query(`
+        CREATE UNIQUE INDEX IF NOT EXISTS unw_promo_signups_email_lower_idx ON unw_promo_signups (LOWER(email));
+      `);
     })();
   }
   return schemaReady;
