@@ -687,9 +687,10 @@
   function applyTileClasses() {
     for (var i = 0; i < TOTAL; i++) {
       var el = tileEls[i];
-      el.classList.remove('poop', 'wiped', 'turbo', 'used');
+      el.classList.remove('poop', 'wiped', 'turbo', 'used', 'spawn-in');
       if (state.poopTiles.has(i)) {
-        el.classList.add('poop');
+        el.classList.add('poop', 'spawn-in');
+        el.style.setProperty('--spawn-delay', (i * 0.015) + 's');
         if (state.wipedTiles.has(i)) el.classList.add('wiped');
       }
       if (state.turboTiles.has(i)) {
