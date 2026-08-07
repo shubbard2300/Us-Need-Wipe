@@ -2,6 +2,7 @@ const db = require('../_lib/db');
 const auth = require('../_lib/auth');
 
 const USERNAME_RE = /^[a-zA-Z0-9_]{3,20}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -9,13 +10,18 @@ module.exports = async (req, res) => {
     return;
   }
   try {
-    const { username, password } = req.body || {};
+    const { username, password, email } = req.body || {};
     if (typeof username !== 'string' || !USERNAME_RE.test(username)) {
       res.status(400).json({ error: 'Username must be 3-20 characters: letters, numbers, underscore.' });
       return;
     }
     if (typeof password !== 'string' || password.length < 6 || password.length > 200) {
       res.status(400).json({ error: 'Password must be at least 6 characters.' });
+      return;
+    }
+    const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+    if (trimmedEmail && (trimmedEmail.length > 200 || !EMAIL_RE.test(trimmedEmail))) {
+      res.status(400).json({ error: 'Enter a valid email address, or leave it blank.' });
       return;
     }
 
@@ -27,8 +33,8 @@ module.exports = async (req, res) => {
 
     const passwordHash = auth.hashPassword(password);
     const inserted = await db.query(
-      'INSERT INTO unw_users (username, password_hash) VALUES ($1, $2) RETURNING id, username',
-      [username, passwordHash]
+      'INSERT INTO unw_users (username, password_hash, email) VALUES ($1, $2, $3) RETURNING id, username',
+      [username, passwordHash, trimmedEmail || null]
     );
     const user = inserted.rows[0];
     const token = auth.signSession(user.id);

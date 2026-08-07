@@ -50,8 +50,12 @@ function ensureSchema() {
           id SERIAL PRIMARY KEY,
           username TEXT NOT NULL,
           password_hash TEXT NOT NULL,
+          email TEXT,
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
+      `);
+      await p.query(`
+        ALTER TABLE unw_users ADD COLUMN IF NOT EXISTS email TEXT;
       `);
       await p.query(`
         CREATE UNIQUE INDEX IF NOT EXISTS unw_users_username_lower_idx ON unw_users (LOWER(username));

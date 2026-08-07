@@ -52,6 +52,8 @@
   var authSignedIn = document.getElementById('authSignedIn');
   var authForm = document.getElementById('authForm');
   var authUsername = document.getElementById('authUsername');
+  var authEmailWrap = document.getElementById('authEmailWrap');
+  var authEmail = document.getElementById('authEmail');
   var authPassword = document.getElementById('authPassword');
   var authError = document.getElementById('authError');
   var authSubmitBtn = document.getElementById('authSubmitBtn');
@@ -496,6 +498,7 @@
     });
     authSubmitBtn.textContent = mode === 'signup' ? 'Sign Up' : 'Sign In';
     authPassword.autocomplete = mode === 'signup' ? 'new-password' : 'current-password';
+    authEmailWrap.classList.toggle('hidden', mode !== 'signup');
     authError.classList.add('hidden');
   }
 
@@ -515,12 +518,14 @@
     var username = authUsername.value.trim();
     var password = authPassword.value;
     var endpoint = authMode === 'signup' ? '/api/auth/signup' : '/api/auth/login';
+    var payload = { username: username, password: password };
+    if (authMode === 'signup') payload.email = authEmail.value.trim();
     authSubmitBtn.disabled = true;
     try {
       var res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, password: password })
+        body: JSON.stringify(payload)
       });
       var data = await res.json();
       if (!res.ok) {
