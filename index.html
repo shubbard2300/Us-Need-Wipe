@@ -194,7 +194,7 @@
     <h2>🔒 Privacy Policy</h2>
     <p>You can play as a guest with nothing stored beyond your own device, or create an account to appear on the global leaderboard. Here's exactly what each involves.</p>
     <p><strong>Playing as a guest (no account):</strong> everything stays in your browser's local storage, on your own device — your best score and top-5 local runs, whether you've seen the "How to Play" intro, and your sound/music preferences. Nothing is sent anywhere. Clearing your browser data removes all of it.</p>
-    <p><strong>If you create an account:</strong> we store your username, a securely hashed password (never the password itself, never in plain text), and the scores you submit, in a database, solely to power the global leaderboard. No email address is required or collected for an account.</p>
+    <p><strong>If you create an account:</strong> we store your username, a securely hashed password (never the password itself, never in plain text), and the scores you submit, in a database, solely to power the global leaderboard. You can optionally add an email address at signup so we can help you get back into your account if you lose your password — it's never required and is never used for anything else.</p>
     <p><strong>If you sign up for email updates:</strong> we store the email address you enter, solely to send you occasional Us Need Wipe news and promotions. We won't sell or share it, and you can unsubscribe any time. This is completely separate and optional — it's never required to play or to have an account.</p>
     <p>Nothing is sold or shared with third parties. You can delete your account and all associated scores at any time from the account menu.</p>
   </div>
@@ -249,6 +249,9 @@
       <form id="authForm" class="auth-form">
         <label>Username
           <input type="text" id="authUsername" autocomplete="username" maxlength="20" required>
+        </label>
+        <label id="authEmailWrap" class="hidden">Email (optional)
+          <input type="email" id="authEmail" autocomplete="email" maxlength="200">
         </label>
         <label>Password
           <input type="password" id="authPassword" autocomplete="current-password" maxlength="200" required>
