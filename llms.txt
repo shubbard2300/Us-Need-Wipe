@@ -1,0 +1,11 @@
+# Us Need Wipe
+
+> A free Candyland-style browser game: race to the castle, land on poop, wipe fast, dodge angry bushes, and call on Legion's shield or Reaper's clean-up ability to survive. Global leaderboard with optional accounts. Made by Steven J. Hubbard.
+
+## Pages
+
+- [Play the game](https://usneedwipe.com/): The full game — how to play, FAQ, leaderboard, and account signup all on one page.
+
+## Merchandise
+
+- [Us Need Wipe merch shop](https://us-need-wipe.myspreadshop.com/all): T-shirts and gifts featuring the game's characters.

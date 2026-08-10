@@ -187,14 +187,20 @@ body{
   75%{transform:scale(0.9) rotate(-6deg);}
   100%{transform:scale(1) rotate(-8deg);opacity:1;}
 }
-.tile.poop:not(.wiped)::before{
-  content:"〰️";
-  position:absolute;
-  top:2%;right:10%;
-  font-size:clamp(10px,2.2vw,16px);
-  opacity:0;
-  pointer-events:none;
-  animation:poop-steam 2.2s ease-in-out infinite;
+.stink-waft{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:1;}
+.tile.wiped .stink-waft,.tile:not(.poop) .stink-waft{display:none;}
+.stink-waft svg{position:absolute;bottom:52%;width:22%;height:46%;color:#6f9a2e;opacity:0;animation:stink-rise 2.4s ease-in-out infinite;}
+.stink-waft svg:nth-child(1){left:14%;animation-delay:0s;}
+.stink-waft svg:nth-child(2){left:40%;animation-delay:.8s;color:#8fb24a;}
+.stink-waft svg:nth-child(3){left:64%;animation-delay:1.5s;}
+@keyframes stink-rise{
+  0%{opacity:0;transform:translateY(8px) scale(.7) rotate(-5deg);}
+  25%{opacity:.85;}
+  60%{opacity:.5;transform:translateY(-14px) scale(1) rotate(5deg);}
+  100%{opacity:0;transform:translateY(-28px) scale(1.18) rotate(-4deg);}
+}
+@media (prefers-reduced-motion: reduce){
+  .stink-waft svg{animation:none;opacity:.55;transform:translateY(-8px);}
 }
 .tile.poop.poop-hit:not(.wiped)::after{animation:poop-laugh .7s ease-in-out 1;}
 @keyframes poop-laugh{
@@ -206,13 +212,7 @@ body{
   80%{transform:scale(1.3) rotate(-6deg);}
   100%{transform:scale(1) rotate(0deg);}
 }
-@keyframes poop-steam{
-  0%{opacity:0;transform:rotate(-90deg) translate(0,0) scale(.7);}
-  20%{opacity:.85;}
-  40%{transform:rotate(-90deg) translate(4px,-7px) scale(.9);}
-  60%{opacity:.5;transform:rotate(-90deg) translate(-4px,-13px) scale(1.05);}
-  100%{opacity:0;transform:rotate(-90deg) translate(3px,-20px) scale(1.2);}
-}
+
 .tile.turbo{background:#fff3b0;border-color:#e0a400;}
 .tile.turbo.used{background:var(--path-safe);border-color:#cbb783;}
 .tile.turbo:not(.used)::after{content:"⚡";position:absolute;font-size:clamp(14px,3vw,22px);animation:turbo-pulse 1s ease-in-out infinite;}
@@ -769,3 +769,5 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
     animation:none !important;
   }
 }
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}

@@ -106,24 +106,79 @@
     var musicOn = localStorage.getItem(MUSIC_KEY) !== '0';
     var musicTimer = null;
     var musicStep = 0;
-    var musicIntervalMs = 118; // ~128 BPM at 16th-note resolution — upbeat dance-pop tempo
+    var musicIntervalMs = 118;
     var intensity = 0;
 
-    // K-pop-inspired dance-pop loop: bright syncopated hooks (with rests, not a note every
-    // step) over a bouncing I-V-vi-IV bassline, plus a four-on-the-floor kick, backbeat
-    // snare/clap, and 8th-note hats. 16 steps = one bar of 4/4 at 16th-note resolution.
-    // Three melodic phrases rotate over the same chord progression (verse/hook/bridge
-    // style) so the loop doesn't feel like one bar repeating forever.
-    var MELODY_HOOK = [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046];
-    var MELODY_VERSE = [523, 659, 0, 784, 659, 0, 880, 0, 587, 698, 0, 880, 698, 0, 784, 0];
-    var MELODY_BRIDGE = [784, 0, 659, 0, 587, 659, 0, 784, 880, 0, 784, 659, 0, 587, 0, 659];
-    var MELODIES = [MELODY_HOOK, MELODY_VERSE, MELODY_HOOK, MELODY_BRIDGE];
-    var BARS_PER_PHRASE = 4;
+    // Four procedural "radio stations" rotate per run — each with its own tempo,
+    // scale, drum pattern, and lead voice, so back-to-back runs don't sound like
+    // one bar repeating forever. stepsPerBar lets the waltz play in 3/4 time.
+    // Toggling the 🎵 button off and on also skips to the next station.
+    var SONGS = [
+      {
+        name: 'Bubblegum Sprint',
+        interval: 118, stepsPerBar: 16, barsPerPhrase: 4,
+        melodies: [
+          [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046],
+          [523, 659, 0, 784, 659, 0, 880, 0, 587, 698, 0, 880, 698, 0, 784, 0],
+          [659, 0, 784, 659, 0, 880, 784, 0, 659, 587, 0, 659, 784, 880, 0, 1046],
+          [784, 0, 659, 0, 587, 659, 0, 784, 880, 0, 784, 659, 0, 587, 0, 659]
+        ],
+        bass: [131, 0, 262, 0, 196, 0, 392, 0, 110, 0, 220, 0, 175, 0, 350, 0],
+        bassType: 'sawtooth',
+        kick: [0, 4, 8, 12], snare: [4, 12], hat: [1, 3, 5, 7, 9, 11, 13, 15],
+        leadTypes: ['triangle', 'square']
+      },
+      {
+        name: 'Castle Chiptune',
+        interval: 130, stepsPerBar: 16, barsPerPhrase: 4,
+        melodies: [
+          [523, 0, 659, 784, 0, 659, 523, 0, 587, 0, 698, 587, 659, 0, 523, 0],
+          [784, 0, 880, 1046, 0, 880, 784, 0, 659, 0, 784, 659, 587, 0, 659, 0],
+          [523, 0, 659, 784, 0, 659, 523, 0, 587, 0, 698, 587, 659, 0, 523, 0],
+          [1046, 0, 880, 784, 880, 0, 784, 659, 698, 0, 659, 587, 523, 0, 0, 0]
+        ],
+        bass: [131, 131, 0, 131, 196, 0, 131, 0, 175, 175, 0, 175, 196, 0, 196, 0],
+        bassType: 'square',
+        kick: [0, 8], snare: [4, 12], hat: [2, 6, 10, 14],
+        leadTypes: ['square', 'square']
+      },
+      {
+        name: 'Swamp Funk',
+        interval: 132, stepsPerBar: 16, barsPerPhrase: 4,
+        melodies: [
+          [440, 0, 0, 523, 0, 587, 440, 0, 0, 659, 587, 0, 523, 0, 440, 0],
+          [659, 0, 587, 0, 784, 0, 659, 587, 0, 440, 0, 523, 587, 659, 0, 0],
+          [440, 0, 0, 523, 0, 587, 440, 0, 0, 659, 587, 0, 523, 0, 440, 0],
+          [880, 0, 784, 659, 0, 784, 0, 587, 659, 0, 587, 523, 0, 440, 0, 0]
+        ],
+        bass: [110, 0, 110, 165, 0, 110, 0, 131, 110, 0, 110, 165, 0, 147, 131, 0],
+        bassType: 'sawtooth',
+        kick: [0, 6, 10], snare: [4, 12], hat: [2, 5, 8, 11, 14],
+        leadTypes: ['sawtooth', 'triangle']
+      },
+      {
+        name: 'Royal Waltz',
+        interval: 150, stepsPerBar: 12, barsPerPhrase: 4,
+        melodies: [
+          [698, 0, 0, 880, 0, 0, 784, 0, 698, 659, 0, 0],
+          [587, 0, 0, 698, 0, 0, 659, 0, 587, 523, 0, 0],
+          [698, 0, 0, 880, 0, 0, 1046, 0, 880, 784, 0, 0],
+          [784, 0, 659, 587, 0, 0, 523, 0, 0, 587, 0, 0]
+        ],
+        bass: [175, 0, 0, 0, 349, 262, 0, 349, 262, 0, 0, 0],
+        bassType: 'triangle',
+        kick: [0], snare: [4, 8], hat: [],
+        leadTypes: ['triangle', 'triangle']
+      }
+    ];
+    var SONG_KEY = 'usNeedWipeSongIdx';
+    var songIndex = (parseInt(localStorage.getItem(SONG_KEY) || '0', 10) || 0) % SONGS.length;
+    var song = SONGS[songIndex];
     var melodyIndex = 0;
-    var BASS = [131, 0, 262, 0, 196, 0, 392, 0, 110, 0, 220, 0, 175, 0, 350, 0];
-    var KICK_STEPS = [0, 4, 8, 12];
-    var SNARE_STEPS = [4, 12];
-    var HAT_STEPS = [1, 3, 5, 7, 9, 11, 13, 15];
+
+    function intensityFactor() {
+      return intensity >= 2 ? 0.75 : (intensity === 1 ? 0.86 : 1);
+    }
 
     function ensure() {
       if (!AudioCtx) return null;
@@ -188,29 +243,29 @@
 
     function playMusicStep() {
       if (muted || !musicOn) return;
-      var i = musicStep % 16;
+      var i = musicStep % song.stepsPerBar;
       if (i === 0 && musicStep > 0) {
-        var bar = musicStep / 16;
-        if (bar % BARS_PER_PHRASE === 0) melodyIndex = (melodyIndex + 1) % MELODIES.length;
+        var bar = musicStep / song.stepsPerBar;
+        if (bar % song.barsPerPhrase === 0) melodyIndex = (melodyIndex + 1) % song.melodies.length;
       }
-      var MELODY = MELODIES[melodyIndex];
+      var MELODY = song.melodies[melodyIndex];
       var pitchUp = intensity >= 2 ? 1.12 : 1;
 
-      if (KICK_STEPS.indexOf(i) !== -1) {
+      if (song.kick.indexOf(i) !== -1) {
         tone(150, 0.12, { type: 'triangle', slideTo: 42, gain: 0.22 + intensity * 0.02 });
       }
-      if (SNARE_STEPS.indexOf(i) !== -1) {
+      if (song.snare.indexOf(i) !== -1) {
         noiseBurst(0.09, { freq: 2600, freqTo: 700, gain: 0.16 + intensity * 0.02 });
         tone(190, 0.06, { type: 'square', gain: 0.08 });
       }
-      if (HAT_STEPS.indexOf(i) !== -1) {
+      if (song.hat.indexOf(i) !== -1) {
         noiseBurst(0.035, { freq: 7000, freqTo: 5000, gain: 0.05 });
       }
       if (MELODY[i]) {
-        tone(MELODY[i] * pitchUp, 0.1, { type: i % 4 === 2 ? 'square' : 'triangle', gain: 0.06 + intensity * 0.01 });
+        tone(MELODY[i] * pitchUp, 0.1, { type: song.leadTypes[i % 4 === 2 ? 1 : 0], gain: 0.06 + intensity * 0.01 });
       }
-      if (BASS[i]) {
-        tone(BASS[i] * pitchUp, 0.13, { type: 'sawtooth', gain: 0.06 + intensity * 0.01 });
+      if (song.bass[i]) {
+        tone(song.bass[i] * pitchUp, 0.13, { type: song.bassType, gain: 0.06 + intensity * 0.01 });
       }
       musicStep++;
     }
@@ -233,17 +288,22 @@
       },
       startMusic: function () {
         if (musicTimer || !musicOn) return;
+        song = SONGS[songIndex];
+        songIndex = (songIndex + 1) % SONGS.length;
+        localStorage.setItem(SONG_KEY, String(songIndex));
         musicStep = 0;
         melodyIndex = 0;
+        musicIntervalMs = Math.round(song.interval * intensityFactor());
         musicTimer = setInterval(playMusicStep, musicIntervalMs);
       },
+      currentSongName: function () { return song.name; },
       stopMusic: function () {
         if (musicTimer) { clearInterval(musicTimer); musicTimer = null; }
       },
       setIntensity: function (level) {
         if (intensity === level) return;
         intensity = level;
-        musicIntervalMs = level >= 2 ? 88 : (level === 1 ? 102 : 118);
+        musicIntervalMs = Math.round(song.interval * intensityFactor());
         restartMusicTimer();
       },
       roll: function () {
@@ -637,6 +697,23 @@
     board.appendChild(waiterToken);
   }
 
+
+  // Cartoon stink lines wafting off every un-wiped poop tile.
+  function addStinkWaft(el) {
+    if (el.querySelector('.stink-waft')) return;
+    var w = document.createElement('div');
+    w.className = 'stink-waft';
+    for (var s = 0; s < 3; s++) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 20 44');
+      var use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+      use.setAttribute('href', '#sprite-stink');
+      svg.appendChild(use);
+      w.appendChild(svg);
+    }
+    el.appendChild(w);
+  }
+
   function pickPoopTiles() {
     var poop = new Set();
     var count = Math.min(POOP_COUNT, FINISH - 2 - 4);
@@ -688,8 +765,11 @@
     for (var i = 0; i < TOTAL; i++) {
       var el = tileEls[i];
       el.classList.remove('poop', 'wiped', 'turbo', 'used', 'spawn-in');
+      var waft = el.querySelector('.stink-waft');
+      if (waft && !state.poopTiles.has(i)) waft.remove();
       if (state.poopTiles.has(i)) {
         el.classList.add('poop', 'spawn-in');
+        addStinkWaft(el);
         el.style.setProperty('--spawn-delay', (i * 0.015) + 's');
         if (state.wipedTiles.has(i)) el.classList.add('wiped');
       }
@@ -1226,6 +1306,7 @@
     rollBtn.disabled = true;
     Sound.unlock();
     Sound.startMusic();
+    showToast('\ud83c\udfb5 Now playing: ' + Sound.currentSongName(), 'good');
 
     rollBtn.classList.add('rolling');
     Sound.roll();
