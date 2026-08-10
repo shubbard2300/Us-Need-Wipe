@@ -189,9 +189,9 @@ body{
 }
 .stink-waft{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:1;}
 .tile.wiped .stink-waft,.tile:not(.poop) .stink-waft{display:none;}
-.stink-waft svg{position:absolute;bottom:52%;width:22%;height:46%;color:#6f9a2e;opacity:0;animation:stink-rise 2.4s ease-in-out infinite;}
+.stink-waft svg{position:absolute;bottom:52%;width:22%;height:46%;color:#7a5426;opacity:0;animation:stink-rise 2.4s ease-in-out infinite;}
 .stink-waft svg:nth-child(1){left:14%;animation-delay:0s;}
-.stink-waft svg:nth-child(2){left:40%;animation-delay:.8s;color:#8fb24a;}
+.stink-waft svg:nth-child(2){left:40%;animation-delay:.8s;color:#9c7040;}
 .stink-waft svg:nth-child(3){left:64%;animation-delay:1.5s;}
 @keyframes stink-rise{
   0%{opacity:0;transform:translateY(8px) scale(.7) rotate(-5deg);}
