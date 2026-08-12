@@ -151,7 +151,7 @@
   <div class="merch-cta">
     <p class="merch-cta-tag">🧻 Love the game? Wear the roll.</p>
     <p class="merch-cta-progress" id="merchCtaProgress"></p>
-    <a href="https://us-need-wipe.myspreadshop.com/all" target="_blank" rel="noopener noreferrer" class="btn btn-merch">Shop Us Need Wipe Merch →</a>
+    <a href="https://us-need-wipe.myspreadshop.com/all?utm_source=usneedwipe.com&utm_medium=merch-cta&utm_campaign=merch" target="_blank" rel="noopener noreferrer" class="btn btn-merch">Shop Us Need Wipe Merch →</a>
   </div>
 
   <footer class="site-footer">
@@ -330,5 +330,12 @@
 </div>
 
 <script src="game.js"></script>
+<script>
+  // GA4 sales-funnel tracking: merch shop clicks
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest && e.target.closest("a[href*='myspreadshop']");
+    if (a) gtag("event", "merch_click", { shop: "spreadshop", placement: "merch-cta", link_url: a.href });
+  }, true);
+</script>
 </body>
 </html>
