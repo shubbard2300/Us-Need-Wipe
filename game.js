@@ -1065,7 +1065,7 @@
       if (tease) {
         var left = SEQUEL_WIN_GOAL - wins;
         tease.textContent = 'Win ' + left + ' more round' + (left === 1 ? '' : 's') +
-          ' to unlock the sequel...';
+          ' — or just keep playing — to unlock the sequel...';
         tease.classList.remove('hidden');
       }
     }
