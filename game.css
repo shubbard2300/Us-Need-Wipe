@@ -863,3 +863,85 @@ kbd{background:#fff;border:1px solid #999;border-radius:4px;padding:1px 6px;font
 @media (prefers-reduced-motion: reduce) {
   .sequel-ribbon, .sequel-ribbon-bush { animation: none; transition: none; }
 }
+
+/* ── sequel prompt for returning players ── */
+.sequel-prompt-card { max-width: 440px; }
+.sequel-prompt-card .sequel-bush {
+  width: 104px; margin: -52px auto 6px;
+}
+.sequel-prompt-card h2 { margin: 6px 0 8px; }
+.sequel-prompt-card .hint { margin: 0 0 14px; }
+.sequel-prompt-card .btn { display: inline-block; margin: 4px 5px 0; }
+.btn-ghost {
+  background: transparent;
+  border: 2px solid rgba(80, 100, 70, .35);
+  color: #6b7f5f;
+  font-weight: 600;
+}
+.btn-ghost:hover { border-color: rgba(80, 100, 70, .6); color: #475a3e; }
+
+/* ── general polish ── */
+.btn {
+  transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible,
+.mute-btn:focus-visible,
+.footer-link:focus-visible,
+.sequel-ribbon:focus-visible {
+  outline: 3px solid #7bc043;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+.mute-btn { transition: transform .14s ease, background .14s ease; }
+.mute-btn:hover { transform: translateY(-1px) scale(1.04); }
+.wipe-card { animation: cardIn .32s cubic-bezier(.2,1.2,.35,1) both; }
+@keyframes cardIn {
+  from { transform: translateY(14px) scale(.97); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+.site-logo { transition: transform .3s ease; }
+.site-logo:hover { transform: scale(1.02) rotate(-.6deg); }
+@media (prefers-reduced-motion: reduce) {
+  .btn, .mute-btn, .wipe-card, .site-logo { transition: none; animation: none; }
+  .btn:hover, .mute-btn:hover { transform: none; }
+}
+
+/* ── 1970s sci-fi title treatment ── */
+.tag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 2px;
+}
+.tag-kicker {
+  font-size: 0.66rem;
+  letter-spacing: .38em;
+  text-transform: uppercase;
+  color: #c9a227;
+  text-indent: .38em;
+}
+.tag-line {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Impact, 'Helvetica Neue', sans-serif;
+  font-size: clamp(1rem, 3.4vw, 1.55rem);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  text-indent: .13em;
+  background: linear-gradient(180deg, #fff6c9 0%, #ffe81f 44%, #d59b12 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .45));
+}
+@supports not (background-clip: text) {
+  .tag-line { color: #ffe81f; -webkit-text-fill-color: #ffe81f; }
+}
+@media (max-width: 420px) {
+  .tag-kicker { letter-spacing: .26em; text-indent: .26em; }
+  .tag-line { letter-spacing: .09em; text-indent: .09em; }
+}

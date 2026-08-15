@@ -17,6 +17,9 @@
   var LEADERBOARD_SIZE = 5;
   var INTRO_SEEN_KEY = 'usNeedWipeSeenIntro';
   var WIN_COUNT_KEY = 'usNeedWipeWinCount';
+  var PLAY_COUNT_KEY = 'usNeedWipePlayCount';
+  var SEQUEL_PROMPT_KEY = 'usNeedWipeSequelPrompted';
+  var SEQUEL_URL = 'https://thereturn.usneedwipe.com/';
   var MERCH_WIN_GOAL = 3;
   // TODO: set the real Spreadshop discount code here once available, e.g. 'WIPE25'.
   var MERCH_DISCOUNT_CODE = '';
@@ -477,6 +480,10 @@
       var el = document.getElementById(id);
       if (!el.classList.contains('hidden')) closeOverlay(el);
     });
+  });
+
+  document.getElementById('sequelPromptClose').addEventListener('click', function () {
+    document.getElementById('sequelPrompt').classList.add('hidden');
   });
 
   document.getElementById('supportBtn').addEventListener('click', function () { openOverlay(document.getElementById('supportOverlay')); });
@@ -1018,6 +1025,31 @@
   }
 
   var SEQUEL_WIN_GOAL = 3;
+  var SEQUEL_PLAY_GOAL = 3;   // "played more than 3 times" — winning is not required
+
+  function getPlayCount() {
+    return parseInt(localStorage.getItem(PLAY_COUNT_KEY) || '0', 10);
+  }
+  function incrementPlayCount() {
+    var n = getPlayCount() + 1;
+    localStorage.setItem(PLAY_COUNT_KEY, String(n));
+    return n;
+  }
+  function sequelEarned() {
+    return getWinCount() >= SEQUEL_WIN_GOAL || getPlayCount() > SEQUEL_PLAY_GOAL;
+  }
+
+  // One quiet, dismissible nudge for players who keep coming back but
+  // have not won yet — they would otherwise never see the win-card unlock.
+  function maybePromptSequel() {
+    if (!sequelEarned()) return;
+    if (localStorage.getItem(SEQUEL_PROMPT_KEY) === '1') return;
+    var el = document.getElementById('sequelPrompt');
+    if (!el) return;
+    localStorage.setItem(SEQUEL_PROMPT_KEY, '1');
+    document.getElementById('sequelPromptCount').textContent = String(getPlayCount());
+    el.classList.remove('hidden');
+  }
 
   // Three cleared rounds earns the sequel at /thereturn.
   function updateSequelUnlock() {
@@ -1025,7 +1057,7 @@
     var tease = document.getElementById('sequelTease');
     if (!box) return;
     var wins = getWinCount();
-    if (wins >= SEQUEL_WIN_GOAL) {
+    if (sequelEarned()) {
       box.classList.remove('hidden');
       if (tease) tease.classList.add('hidden');
     } else {
@@ -1434,6 +1466,9 @@
   }
 
   function resetGame() {
+    incrementPlayCount();
+    maybePromptSequel();
+    updateSequelUnlock();
     state = newState();
     applyTileClasses();
     repositionAll();

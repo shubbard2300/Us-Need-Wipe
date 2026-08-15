@@ -118,8 +118,12 @@
 <main class="wrap">
   <header class="game-header" id="gameHeader">
     <h1><img src="logo.png" alt="Us Need Wipe" class="site-logo" id="siteLogo"></h1>
-    <p class="tag">Race the board. Poop, wipe fast, don't get caught by the bushes.</p>
-    <a href="/thereturn" class="sequel-ribbon" id="sequelRibbon">
+    <p class="tag">
+      <span class="tag-kicker">Episode I · The Valley Awakens</span>
+      <span class="tag-line">The hedge is awake. The castle lies beyond.<br>
+      Roll fast. Wipe faster.</span>
+    </p>
+    <a href="https://thereturn.usneedwipe.com/" class="sequel-ribbon" id="sequelRibbon">
       <img loading="lazy" src="AngryBushTwo.png" alt="" class="sequel-ribbon-bush">
       <span class="sequel-ribbon-text">
         <span class="sequel-ribbon-kicker">NEW · THE SEQUEL</span>
@@ -171,7 +175,7 @@
     <span class="footer-dot">·</span>
     <button type="button" id="promoBtn" class="footer-link">Get Updates</button>
     <span class="footer-dot">·</span>
-    <a href="/thereturn" class="footer-link footer-link--sequel">Angry Bushes Return →</a>
+    <a href="https://thereturn.usneedwipe.com/" class="footer-link footer-link--sequel">Angry Bushes Return →</a>
   </footer>
 </main>
 
@@ -313,6 +317,19 @@
 </div>
 
 <!-- Caught by a bush -->
+<div id="sequelPrompt" class="overlay hidden">
+  <div class="wipe-card sequel-prompt-card">
+    <img loading="lazy" src="AngryBushTwo.png" alt="An angry bush holding a rifle" class="sequel-bush">
+    <h2>Still here?</h2>
+    <p>You've played <strong id="sequelPromptCount">4</strong> rounds. The bushes
+    noticed — and they've been busy.</p>
+    <p class="hint">Angry Bushes Return is an arcade shooter with a soundtrack that
+    rewrites itself every level. Same bushes. Considerably more hostile.</p>
+    <a href="https://thereturn.usneedwipe.com/" class="btn btn-sequel">Play the sequel →</a>
+    <button type="button" id="sequelPromptClose" class="btn btn-ghost">Maybe later</button>
+  </div>
+</div>
+
 <div id="caughtOverlay" class="overlay hidden">
   <div class="wipe-card caught-card">
     <div class="wipe-emoji">😱</div>
@@ -340,7 +357,7 @@
       <img loading="lazy" src="AngryBushTwo.png" alt="An angry bush holding a rifle" class="sequel-bush">
       <h3>🌿 THE BUSHES CAME BACK</h3>
       <p>Three rounds cleared. They have been waiting — and this time they are armed.</p>
-      <a href="/thereturn" class="btn btn-sequel" id="sequelLink">Play “Angry Bushes Return” →</a>
+      <a href="https://thereturn.usneedwipe.com/" class="btn btn-sequel" id="sequelLink">Play “Angry Bushes Return” →</a>
     </div>
     <button type="button" id="playAgainBtn" class="btn btn-roll">Play Again</button>
   </div>
@@ -352,7 +369,7 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href*='myspreadshop']");
     if (a) gtag("event", "merch_click", { shop: "spreadshop", placement: "merch-cta", link_url: a.href });
-    var s = e.target.closest && e.target.closest("a[href^='/thereturn']");
+    var s = e.target.closest && e.target.closest("a[href^='https://thereturn.usneedwipe.com']");
     if (s) gtag("event", "sequel_click", { placement: "win-card", link_url: s.href });
   }, true);
 </script>

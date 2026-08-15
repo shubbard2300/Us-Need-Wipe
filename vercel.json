@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/thereturn",
+      "destination": "https://thereturn.usneedwipe.com/",
+      "permanent": false
+    },
+    {
+      "source": "/thereturn/:path*",
+      "destination": "https://thereturn.usneedwipe.com/:path*",
+      "permanent": false
+    }
+  ]
+}
