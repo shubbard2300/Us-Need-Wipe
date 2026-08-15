@@ -17,6 +17,10 @@
 <meta property="og:title" content="Us Need Wipe — a race to the castle">
 <meta property="og:description" content="A Candyland-style race to the castle. Poop, wipe fast, dodge angry bushes, and call on Legion's shield or Reaper's clean-up ability to survive.">
 <meta property="og:image" content="https://usneedwipe.com/background-scene.jpg">
+<meta property="og:image:width" content="2200">
+<meta property="og:image:height" content="1466">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Us Need Wipe">
 <meta property="og:image:alt" content="Us Need Wipe game artwork — a painted castle landscape">
 <meta property="og:url" content="https://usneedwipe.com/">
 <meta name="twitter:card" content="summary_large_image">
@@ -36,7 +40,39 @@
   "operatingSystem": "Any (runs in a web browser)",
   "playMode": "SinglePlayer",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "image": "https://usneedwipe.com/background-scene.jpg"
+  "image": "https://usneedwipe.com/background-scene.jpg",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "author": { "@type": "Person", "name": "Steven Hubbard" },
+  "publisher": { "@type": "Organization", "name": "Us Need Wipe", "url": "https://usneedwipe.com/" },
+  "gameItem": { "@type": "Thing", "name": "Toilet paper" },
+  "characterAttribute": [
+    { "@type": "Thing", "name": "King Log" },
+    { "@type": "Thing", "name": "Legion" },
+    { "@type": "Thing", "name": "The Reaper" }
+  ],
+  "sameAs": ["https://thereturn.usneedwipe.com/"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Us Need Wipe",
+  "url": "https://usneedwipe.com/",
+  "inLanguage": "en",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Us Need Wipe",
+    "url": "https://usneedwipe.com/",
+    "logo": "https://usneedwipe.com/UsNeedWipeLogo.png"
+  },
+  "hasPart": {
+    "@type": "VideoGame",
+    "name": "Angry Bushes Return",
+    "url": "https://thereturn.usneedwipe.com/",
+    "description": "The sequel: an arcade shooter against the same bushes, now armed."
+  }
 }
 </script>
 <link rel="stylesheet" href="game.css">
@@ -45,8 +81,6 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XPPCT71G1D');</script>
 </head>
 <body>
-<h1 class="sr-only">Us Need Wipe — a free browser game: race to the castle</h1>
-
 <!-- Hidden sprite defs, reused for the player token and every bush chaser -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
@@ -117,14 +151,14 @@
 
 <main class="wrap">
   <header class="game-header" id="gameHeader">
-    <h1><img src="logo.png" alt="Us Need Wipe" class="site-logo" id="siteLogo"></h1>
+    <h1><img src="logo.png" alt="" class="site-logo" id="siteLogo" width="900" height="618" fetchpriority="high"><span class="sr-only">Us Need Wipe — a free browser game: race to the castle</span></h1>
     <p class="tag">
       <span class="tag-kicker">Episode I · The Valley Awakens</span>
       <span class="tag-line">The hedge is awake. The castle lies beyond.<br>
       Roll fast. Wipe faster.</span>
     </p>
-    <a href="https://thereturn.usneedwipe.com/" class="sequel-ribbon" id="sequelRibbon">
-      <img loading="lazy" src="AngryBushTwo.png" alt="" class="sequel-ribbon-bush">
+    <a href="https://thereturn.usneedwipe.com/" class="sequel-ribbon hidden" id="sequelRibbon">
+      <img loading="lazy" src="AngryBushTwo.webp" alt="An angry bush carrying a rifle" class="sequel-ribbon-bush" width="613" height="600" decoding="async">
       <span class="sequel-ribbon-text">
         <span class="sequel-ribbon-kicker">NEW · THE SEQUEL</span>
         <strong>Angry Bushes Return</strong>
@@ -304,7 +338,7 @@
 <!-- Wipe quick-time event -->
 <div id="wipeOverlay" class="overlay hidden">
   <div class="wipe-card" id="wipeCard">
-    <img loading="lazy" src="reaper.png" alt="" class="reaper-pop">
+    <img loading="lazy" src="reaper.webp" alt="The Reaper, hooded and carrying a scythe" class="reaper-pop" width="457" height="500" decoding="async">
     <div class="wipe-emoji poop-king">💩<span class="crown">👑</span></div>
     <h2>UH OH — WIPE NOW!</h2>
     <div class="wipe-timerbar"><div id="wipeTimerFill" class="wipe-timerbar-fill"></div></div>
@@ -319,7 +353,7 @@
 <!-- Caught by a bush -->
 <div id="sequelPrompt" class="overlay hidden">
   <div class="wipe-card sequel-prompt-card">
-    <img loading="lazy" src="AngryBushTwo.png" alt="An angry bush holding a rifle" class="sequel-bush">
+    <img loading="lazy" src="AngryBushTwo.webp" alt="An angry bush holding a rifle" class="sequel-bush" width="613" height="600" decoding="async">
     <h2>Still here?</h2>
     <p>You've played <strong id="sequelPromptCount">4</strong> rounds. The bushes
     noticed — and they've been busy.</p>
@@ -341,9 +375,9 @@
 <!-- Win screen -->
 <div id="winOverlay" class="overlay hidden">
   <div class="wipe-card win-card" id="winCard">
-    <img loading="lazy" src="finish-tile.png" alt="" class="win-toilet">
+    <img loading="lazy" src="finish-tile.webp" alt="The golden finish toilet at the castle" class="win-toilet" width="301" height="470" decoding="async">
     <svg viewBox="0 0 100 100" class="win-dancer"><use href="#sprite-tp"/></svg>
-    <img loading="lazy" src="king-log.png" alt="King Log" id="kingLogPopup" class="king-log-pop">
+    <img loading="lazy" src="king-log.webp" alt="King Log, crowned and holding a sceptre" id="kingLogPopup" class="king-log-pop" width="468" height="564" decoding="async">
     <h2>🏰 You made it — and stayed clean!</h2>
     <p>Final score: <strong id="finalScore">0</strong></p>
     <p id="newBestText" class="new-best hidden">New best score!</p>
@@ -354,7 +388,7 @@
     <p id="signInPrompt" class="hint hidden">Sign in to save your score to the global leaderboard!</p>
     <p id="sequelTease" class="sequel-tease hidden"></p>
     <div id="sequelUnlock" class="sequel-unlock hidden">
-      <img loading="lazy" src="AngryBushTwo.png" alt="An angry bush holding a rifle" class="sequel-bush">
+      <img loading="lazy" src="AngryBushTwo.webp" alt="An angry bush holding a rifle" class="sequel-bush" width="613" height="600" decoding="async">
       <h3>🌿 The Bushes Came Back</h3>
       <p>Three rounds cleared. They have been waiting — and this time they are armed.</p>
       <a href="https://thereturn.usneedwipe.com/" class="btn btn-sequel" id="sequelLink">Play “Angry Bushes Return” →</a>

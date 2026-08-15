@@ -685,7 +685,7 @@
         tile.dataset.index = idx;
         if (idx === FINISH) {
           tile.classList.add('finish');
-          tile.innerHTML = '<img class="finish-icon" src="finish-tile.png" alt="">';
+          tile.innerHTML = '<img class="finish-icon" src="finish-tile.webp" alt="">';
         }
         tileEls[idx] = tile;
         board.appendChild(tile);
@@ -853,7 +853,7 @@
     var cy = r.top - boardRect.top + r.height / 2;
     var img = document.createElement('img');
     img.className = 'clean-pop';
-    img.src = 'wipe-clean.png';
+    img.src = 'wipe-clean.webp';
     img.alt = '';
     img.style.left = cx + 'px';
     img.style.top = cy + 'px';
@@ -868,7 +868,7 @@
     var cy = r.top - boardRect.top + r.height / 2;
     var img = document.createElement('img');
     img.className = 'clean-pop fail-pop';
-    img.src = 'wipe-fail.png';
+    img.src = 'wipe-fail.webp';
     img.alt = '';
     img.style.left = cx + 'px';
     img.style.top = cy + 'px';
@@ -883,7 +883,7 @@
     var cy = r.top - boardRect.top + r.height / 2;
     var img = document.createElement('img');
     img.className = 'legion-pop';
-    img.src = 'legion.png';
+    img.src = 'legion.webp';
     img.alt = '';
     img.style.left = cx + 'px';
     img.style.top = cy + 'px';
@@ -938,7 +938,7 @@
     state.shield = true;
     playerToken.classList.add('shielded');
     Sound.legionArrive();
-    spawnAbilityCharacter(playerToken, 'legion.png', 'legion-ability-pop');
+    spawnAbilityCharacter(playerToken, 'legion.webp', 'legion-ability-pop');
     showToast('⚔️ Legion is protecting you from the bushes!', 'good');
   }
 
@@ -961,7 +961,7 @@
     tileEls[targetIdx].classList.add('wiped');
     Sound.reaperClean();
     spawnSparkles(tileEls[targetIdx]);
-    spawnAbilityCharacter(tileEls[targetIdx], 'reaper.png', 'reaper-ability-pop');
+    spawnAbilityCharacter(tileEls[targetIdx], 'reaper.webp', 'reaper-ability-pop');
     showToast('💀 Reaper cleaned a poop zone ahead!', 'good');
   }
 
@@ -1026,6 +1026,7 @@
 
   var SEQUEL_WIN_GOAL = 3;
   var SEQUEL_PLAY_GOAL = 3;   // "played more than 3 times" — winning is not required
+  var SEQUEL_CTA_GOAL = 2;    // the masthead ribbon waits until you've had a couple of rounds
 
   function getPlayCount() {
     return parseInt(localStorage.getItem(PLAY_COUNT_KEY) || '0', 10);
@@ -1035,6 +1036,14 @@
     localStorage.setItem(PLAY_COUNT_KEY, String(n));
     return n;
   }
+  // First-time visitors get a clean masthead. The sequel earns its pitch.
+  function updateSequelCta() {
+    var ribbon = document.getElementById('sequelRibbon');
+    if (!ribbon) return;
+    if (getPlayCount() >= SEQUEL_CTA_GOAL) ribbon.classList.remove('hidden');
+    else ribbon.classList.add('hidden');
+  }
+
   function sequelEarned() {
     return getWinCount() >= SEQUEL_WIN_GOAL || getPlayCount() > SEQUEL_PLAY_GOAL;
   }
@@ -1467,6 +1476,7 @@
 
   function resetGame() {
     incrementPlayCount();
+    updateSequelCta();
     maybePromptSequel();
     updateSequelUnlock();
     state = newState();
@@ -1512,6 +1522,7 @@
   fetchMe();
   updateMerchCta();
   updateSequelUnlock();
+  updateSequelCta();
   openOverlayFromHash();
 
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
