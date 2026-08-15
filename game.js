@@ -483,6 +483,16 @@
   document.getElementById('privacyBtn').addEventListener('click', function () { openOverlay(document.getElementById('privacyOverlay')); });
   document.getElementById('faqBtn').addEventListener('click', function () { openOverlay(document.getElementById('faqOverlay')); });
 
+  // Deep links so other pages (e.g. /thereturn) can open these panels directly.
+  function openOverlayFromHash() {
+    var map = { '#support': 'supportOverlay', '#privacy': 'privacyOverlay', '#faq': 'faqOverlay' };
+    var h = (location.hash || '').toLowerCase();
+    var id = map[h];
+    if (id) { openOverlay(document.getElementById(id)); return; }
+    if (h === '#updates') { document.getElementById('promoBtn').click(); }
+  }
+  window.addEventListener('hashchange', openOverlayFromHash);
+
   var promoOverlay = document.getElementById('promoOverlay');
   var promoFormWrap = document.getElementById('promoForm-wrap');
   var promoForm = document.getElementById('promoForm');
@@ -1007,6 +1017,28 @@
     return n;
   }
 
+  var SEQUEL_WIN_GOAL = 3;
+
+  // Three cleared rounds earns the sequel at /thereturn.
+  function updateSequelUnlock() {
+    var box = document.getElementById('sequelUnlock');
+    var tease = document.getElementById('sequelTease');
+    if (!box) return;
+    var wins = getWinCount();
+    if (wins >= SEQUEL_WIN_GOAL) {
+      box.classList.remove('hidden');
+      if (tease) tease.classList.add('hidden');
+    } else {
+      box.classList.add('hidden');
+      if (tease) {
+        var left = SEQUEL_WIN_GOAL - wins;
+        tease.textContent = 'Win ' + left + ' more round' + (left === 1 ? '' : 's') +
+          ' to unlock the sequel...';
+        tease.classList.remove('hidden');
+      }
+    }
+  }
+
   function updateMerchCta() {
     var progressEl = document.getElementById('merchCtaProgress');
     if (!progressEl) return;
@@ -1275,6 +1307,7 @@
       kingLogPopup.classList.add('show');
       incrementWinCount();
       updateMerchCta();
+      updateSequelUnlock();
       state.gameOver = true;
       submitAndShowGlobalLeaderboard(state.score, state.wipes);
       return true;
@@ -1443,6 +1476,8 @@
   resetGame();
   fetchMe();
   updateMerchCta();
+  updateSequelUnlock();
+  openOverlayFromHash();
 
   if (localStorage.getItem(INTRO_SEEN_KEY) !== '1') {
     openOverlay(introOverlay);

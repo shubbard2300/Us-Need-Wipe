@@ -119,6 +119,14 @@
   <header class="game-header" id="gameHeader">
     <h1><img src="logo.png" alt="Us Need Wipe" class="site-logo" id="siteLogo"></h1>
     <p class="tag">Race the board. Poop, wipe fast, don't get caught by the bushes.</p>
+    <a href="/thereturn" class="sequel-ribbon" id="sequelRibbon">
+      <img loading="lazy" src="AngryBushTwo.png" alt="" class="sequel-ribbon-bush">
+      <span class="sequel-ribbon-text">
+        <span class="sequel-ribbon-kicker">NEW · THE SEQUEL</span>
+        <strong>Angry Bushes Return</strong>
+      </span>
+      <span class="sequel-ribbon-go">Play →</span>
+    </a>
   </header>
 
   <div class="controls">
@@ -162,6 +170,8 @@
     <button type="button" id="faqBtn" class="footer-link">FAQ</button>
     <span class="footer-dot">·</span>
     <button type="button" id="promoBtn" class="footer-link">Get Updates</button>
+    <span class="footer-dot">·</span>
+    <a href="/thereturn" class="footer-link footer-link--sequel">Angry Bushes Return →</a>
   </footer>
 </main>
 
@@ -325,6 +335,13 @@
     <h3 class="leaderboard-heading">🏆 Global Leaderboard</h3>
     <ol id="globalLeaderboardList" class="leaderboard"></ol>
     <p id="signInPrompt" class="hint hidden">Sign in to save your score to the global leaderboard!</p>
+    <p id="sequelTease" class="sequel-tease hidden"></p>
+    <div id="sequelUnlock" class="sequel-unlock hidden">
+      <img loading="lazy" src="AngryBushTwo.png" alt="An angry bush holding a rifle" class="sequel-bush">
+      <h3>🌿 THE BUSHES CAME BACK</h3>
+      <p>Three rounds cleared. They have been waiting — and this time they are armed.</p>
+      <a href="/thereturn" class="btn btn-sequel" id="sequelLink">Play “Angry Bushes Return” →</a>
+    </div>
     <button type="button" id="playAgainBtn" class="btn btn-roll">Play Again</button>
   </div>
 </div>
@@ -335,6 +352,8 @@
   document.addEventListener("click", function (e) {
     var a = e.target.closest && e.target.closest("a[href*='myspreadshop']");
     if (a) gtag("event", "merch_click", { shop: "spreadshop", placement: "merch-cta", link_url: a.href });
+    var s = e.target.closest && e.target.closest("a[href^='/thereturn']");
+    if (s) gtag("event", "sequel_click", { placement: "win-card", link_url: s.href });
   }, true);
 </script>
 </body>
