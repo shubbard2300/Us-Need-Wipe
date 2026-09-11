@@ -4,6 +4,12 @@ const db = require('./db');
 const SESSION_COOKIE = 'unw_session';
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 30; // 30 days
 
+// Scope the session to the apex + subdomains so auth carries to thereturn.usneedwipe.com.
+// Production only: preview deploys live on *.vercel.app and would reject this Domain,
+// silently breaking auth exactly where the sequel gets tested.
+const COOKIE_DOMAIN =
+  process.env.VERCEL_ENV === 'production' ? '; Domain=.usneedwipe.com' : '';
+
 // Signing key is derived from the Postgres connection string (which Vercel injects
 // automatically once a database is attached), so no extra env var setup is required.
 // It's server-side only and never sent to the client.
@@ -70,12 +76,12 @@ function setSessionCookie(res, token) {
   const maxAge = Math.floor(SESSION_TTL_MS / 1000);
   res.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax; Secure`
+    `${SESSION_COOKIE}=${token}; Max-Age=${maxAge}; Path=/${COOKIE_DOMAIN}; HttpOnly; SameSite=Lax; Secure`
   );
 }
 
 function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax; Secure`);
+  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; Max-Age=0; Path=/${COOKIE_DOMAIN}; HttpOnly; SameSite=Lax; Secure`);
 }
 
 async function getCurrentUser(req) {
